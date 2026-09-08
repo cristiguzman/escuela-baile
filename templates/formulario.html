@@ -128,7 +128,7 @@
             <div class="section-title">Firma Digital</div>
             <div class="signature-area">
                 <p>Firma aquí:</p>
-                <canvas id="canvas" width="500" height="150"></canvas>
+                <canvas id="canvas" width="500" height="150" style="max-width: 100%; display: block;"></canvas>
                 <button type="button" onclick="limpiarFirma()">Limpiar Firma</button>
             </div>
 
@@ -144,8 +144,33 @@
         const ctx = canvas.getContext('2d');
         let dibujando = false;
 
-        canvas.addEventListener('mousedown', () => dibujando = true);
-        canvas.addEventListener('mouseup', () => dibujando = false);
+        // Ajustar canvas para móvil y desktop
+        function redimensionarCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            
+            ctx.scale(dpr, dpr);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 2;
+        }
+
+        redimensionarCanvas();
+        window.addEventListener('resize', redimensionarCanvas);
+
+        // Eventos de mouse
+        canvas.addEventListener('mousedown', (e) => {
+            dibujando = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        });
+
         canvas.addEventListener('mousemove', (e) => {
             if (!dibujando) return;
             const rect = canvas.getBoundingClientRect();
@@ -155,13 +180,10 @@
             ctx.stroke();
         });
 
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-        });
-		
-		// Eventos táctiles para móvil
+        canvas.addEventListener('mouseup', () => dibujando = false);
+        canvas.addEventListener('mouseout', () => dibujando = false);
+
+        // Eventos táctiles para móvil
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             dibujando = true;
