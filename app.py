@@ -68,64 +68,61 @@ def crear_hoja_si_no_existe():
     except Exception as e:
         print(f"Error creando hoja: {e}")
 
-def enviar_email_async(email, nombre, clases, datos):
+def enviar_email_async(app, email, nombre, clases, datos):
     """Envía email en background sin bloquear la aplicación"""
-    try:
-        print(f"[EMAIL] Iniciando envío a: {email}")
-        
-        asunto = "Confirmación de Inscripción - Escuela de Baile"
-        
-        cuerpo = f"""
-        <html>
-        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                <h2 style="color: #667eea;">✓ ¡Inscripción Confirmada!</h2>
-                
-                <p>Hola <strong>{nombre}</strong>,</p>
-                
-                <p>Gracias por inscribirse en nuestra escuela de baile. Hemos recibido tu solicitud correctamente.</p>
-                
-                <h3 style="color: #667eea; margin-top: 30px;">Datos de tu Inscripción:</h3>
-                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                    <p><strong>Nombre:</strong> {nombre}</p>
-                    <p><strong>Email:</strong> {email}</p>
-                    <p><strong>Teléfono:</strong> {datos.get('telefono', 'N/A')}</p>
-                    <p><strong>Clases Seleccionadas:</strong><br>
-                    {''.join([f'• {clase}<br>' for clase in clases])}
+    with app.app_context():
+        try:
+            print(f"[EMAIL] Iniciando envío a: {email}")
+            
+            asunto = "Confirmación de Inscripción - Escuela de Baile"
+            
+            cuerpo = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <h2 style="color: #667eea;">✓ ¡Inscripción Confirmada!</h2>
+                    
+                    <p>Hola <strong>{nombre}</strong>,</p>
+                    
+                    <p>Gracias por inscribirse en nuestra escuela de baile. Hemos recibido tu solicitud correctamente.</p>
+                    
+                    <h3 style="color: #667eea; margin-top: 30px;">Datos de tu Inscripción:</h3>
+                    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                        <p><strong>Nombre:</strong> {nombre}</p>
+                        <p><strong>Email:</strong> {email}</p>
+                        <p><strong>Teléfono:</strong> {datos.get('telefono', 'N/A')}</p>
+                        <p><strong>Clases Seleccionadas:</strong><br>
+                        {''.join([f'• {clase}<br>' for clase in clases])}
+                        </p>
+                        <p><strong>Fecha de Registro:</strong> {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
+                    </div>
+                    
+                    <h3 style="color: #667eea; margin-top: 30px;">¿Qué es lo siguiente?</h3>
+                    <p>En breve nos pondremos en contacto contigo para confirmar tu pago y proporcionar más detalles sobre el inicio de las clases.</p>
+                    
+                    <p style="margin-top: 30px; color: #888; font-size: 12px;">
+                        Este es un email automático. Por favor, no respondas a este correo.
                     </p>
-                    <p><strong>Fecha de Registro:</strong> {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
+                    
+                    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;">
+                    <p style="text-align: center; color: #667eea; font-weight: bold;">Escuela de Baile</p>
                 </div>
-                
-                <h3 style="color: #667eea; margin-top: 30px;">¿Qué es lo siguiente?</h3>
-                <p>En breve nos pondremos en contacto contigo para confirmar tu pago y proporcionar más detalles sobre el inicio de las clases.</p>
-                
-                <p style="margin-top: 30px; color: #888; font-size: 12px;">
-                    Este es un email automático. Por favor, no respondas a este correo.
-                </p>
-                
-                <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;">
-                <p style="text-align: center; color: #667eea; font-weight: bold;">Escuela de Baile</p>
-            </div>
-        </body>
-        </html>
-        """
-        
-        with app.app_context():
+            </body>
+            </html>
+            """
+            
             msg = Message(
                 subject=asunto,
                 recipients=[email],
                 html=cuerpo
             )
+            print(f"[EMAIL] Mensaje creado, enviando...")
             mail.send(msg)
             print(f"[EMAIL] ✓ Email enviado a {email}")
-    except Exception as e:
-        print(f"[EMAIL] ✗ Error enviando email: {e}")
-        import traceback
-        traceback.print_exc()
-
-@app.route('/')
-def formulario():
-    return render_template('formulario.html')
+        except Exception as e:
+            print(f"[EMAIL] ✗ Error enviando email: {e}")
+            import traceback
+            traceback.print_exc()
 
 @app.route('/guardar', methods=['POST'])
 def guardar():
@@ -168,8 +165,8 @@ def guardar():
         
         # Enviar email en background (no bloquea)
         if email_destino:
-            thread = threading.Thread(target=enviar_email_async, args=(email_destino, datos['nombre'], clases, datos))
-            thread.daemon = True
+            print(f"[GUARDAR] Iniciando thread de email...")
+            thread = threading.Thread(target=enviar_email_async, args=(app, email_destino, datos['nombre'], clases, datos))
             thread.start()
         
         return jsonify({'success': True, 'mensaje': '¡Inscripción registrada correctamente!'})
