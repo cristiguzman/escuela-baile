@@ -13,7 +13,6 @@ SPREADSHEET_ID = '114L--j0CQW9yikCx7fn04xDPX89il5nWS7tr7z4Scko'  # Reemplaza con
 
 def conectar_sheets():
     try:
-        # Leer credenciales de la variable de entorno
         creds_json = os.getenv('GOOGLE_CREDENTIALS')
         
         if creds_json:
@@ -25,7 +24,6 @@ def conectar_sheets():
         client = gspread.authorize(creds)
         spreadsheet = client.open_by_key(SPREADSHEET_ID)
         
-        # Buscar la hoja "Inscripciones", si no existe crearla
         try:
             ws = spreadsheet.worksheet("Inscripciones")
         except gspread.exceptions.WorksheetNotFound:
@@ -40,10 +38,22 @@ def crear_hoja_si_no_existe():
     try:
         ws = conectar_sheets()
         if ws and ws.cell(1, 1).value is None:
-            encabezados = ['ID', 'Nombre', 'Email', 'Teléfono', 'Clases', 
-                          'Tutor', 'Tel. Tutor', 'Email Tutor', 
-                          'Acepta Términos', 'Autoriza Imagen', 'Firma', 'Fecha Registro']
-            ws.append_row(encabezados)
+            # Crear encabezados en la primera fila
+            encabezados = [
+                'ID',
+                'Nombre',
+                'Email',
+                'Teléfono',
+                'Clases',
+                'Tutor',
+                'Tel. Tutor',
+                'Email Tutor',
+                'Acepta Términos',
+                'Autoriza Imagen',
+                'Firma',
+                'Fecha Registro'
+            ]
+            ws.insert_row(encabezados, 1)
     except Exception as e:
         print(f"Error creando hoja: {e}")
 
@@ -61,14 +71,12 @@ def guardar():
             return jsonify({'success': False, 'error': 'No se pudo conectar a Google Sheets'})
         
         # Obtener siguiente ID
-        id_registro = ws.row_count + 1
+        id_registro = ws.row_count
         
-        # La firma viene como base64
         firma_base64 = datos.get('firma', '')
-        
-        # Las clases vienen como lista, convertir a string separado por comas
         clases = ', '.join(datos.get('clases', []))
         
+        # Crear fila con los datos en el orden correcto
         fila = [
             id_registro,
             datos['nombre'],
