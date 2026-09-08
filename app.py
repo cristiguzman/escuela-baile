@@ -68,57 +68,56 @@ def crear_hoja_si_no_existe():
         print(f"Error creando hoja: {e}")
 
 def enviar_confirmacion(email, nombre, clases, datos):
-    with app.app_context():
-        try:
-            asunto = "Confirmación de Inscripción - Escuela de Baile"
-            
-            cuerpo = f"""
-            <html>
-            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
-                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <h2 style="color: #667eea;">✓ ¡Inscripción Confirmada!</h2>
-                    
-                    <p>Hola <strong>{nombre}</strong>,</p>
-                    
-                    <p>Gracias por inscribirse en nuestra escuela de baile. Hemos recibido tu solicitud correctamente.</p>
-                    
-                    <h3 style="color: #667eea; margin-top: 30px;">Datos de tu Inscripción:</h3>
-                    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                        <p><strong>Nombre:</strong> {nombre}</p>
-                        <p><strong>Email:</strong> {email}</p>
-                        <p><strong>Teléfono:</strong> {datos.get('telefono', 'N/A')}</p>
-                        <p><strong>Clases Seleccionadas:</strong><br>
-                        {''.join([f'• {clase}<br>' for clase in clases])}
-                        </p>
-                        <p><strong>Fecha de Registro:</strong> {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
-                    </div>
-                    
-                    <h3 style="color: #667eea; margin-top: 30px;">¿Qué es lo siguiente?</h3>
-                    <p>En breve nos pondremos en contacto contigo para confirmar tu pago y proporcionar más detalles sobre el inicio de las clases.</p>
-                    
-                    <p style="margin-top: 30px; color: #888; font-size: 12px;">
-                        Este es un email automático. Por favor, no respondas a este correo.
+    try:
+        asunto = "Confirmación de Inscripción - Escuela de Baile"
+        
+        cuerpo = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <h2 style="color: #667eea;">✓ ¡Inscripción Confirmada!</h2>
+                
+                <p>Hola <strong>{nombre}</strong>,</p>
+                
+                <p>Gracias por inscribirse en nuestra escuela de baile. Hemos recibido tu solicitud correctamente.</p>
+                
+                <h3 style="color: #667eea; margin-top: 30px;">Datos de tu Inscripción:</h3>
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                    <p><strong>Nombre:</strong> {nombre}</p>
+                    <p><strong>Email:</strong> {email}</p>
+                    <p><strong>Teléfono:</strong> {datos.get('telefono', 'N/A')}</p>
+                    <p><strong>Clases Seleccionadas:</strong><br>
+                    {''.join([f'• {clase}<br>' for clase in clases])}
                     </p>
-                    
-                    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;">
-                    <p style="text-align: center; color: #667eea; font-weight: bold;">Escuela de Baile</p>
+                    <p><strong>Fecha de Registro:</strong> {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
                 </div>
-            </body>
-            </html>
-            """
-            
-            msg = Message(
-                subject=asunto,
-                recipients=[email],
-                html=cuerpo
-            )
-            
-            mail.send(msg)
-            print(f"Email enviado a {email}")
-            return True
-        except Exception as e:
-            print(f"Error enviando email: {e}")
-            return False
+                
+                <h3 style="color: #667eea; margin-top: 30px;">¿Qué es lo siguiente?</h3>
+                <p>En breve nos pondremos en contacto contigo para confirmar tu pago y proporcionar más detalles sobre el inicio de las clases.</p>
+                
+                <p style="margin-top: 30px; color: #888; font-size: 12px;">
+                    Este es un email automático. Por favor, no respondas a este correo.
+                </p>
+                
+                <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;">
+                <p style="text-align: center; color: #667eea; font-weight: bold;">Escuela de Baile</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        msg = Message(
+            subject=asunto,
+            recipients=[email],
+            html=cuerpo
+        )
+        
+        mail.send(msg)
+        print(f"Email enviado a {email}")
+        return True
+    except Exception as e:
+        print(f"Error enviando email: {e}")
+        return False
 
 @app.route('/')
 def formulario():
