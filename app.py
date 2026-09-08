@@ -5,6 +5,7 @@ import gspread
 from datetime import datetime
 import os
 import json
+import threading
 
 app = Flask(__name__)
 
@@ -67,8 +68,11 @@ def crear_hoja_si_no_existe():
     except Exception as e:
         print(f"Error creando hoja: {e}")
 
-def enviar_confirmacion(email, nombre, clases, datos):
+def enviar_email_async(email, nombre, clases, datos):
+    """Envía email en background sin bloquear la aplicación"""
     try:
+        print(f"[EMAIL] Iniciando envío a: {email}")
+        
         asunto = "Confirmación de Inscripción - Escuela de Baile"
         
         cuerpo = f"""
@@ -106,18 +110,18 @@ def enviar_confirmacion(email, nombre, clases, datos):
         </html>
         """
         
-        msg = Message(
-            subject=asunto,
-            recipients=[email],
-            html=cuerpo
-        )
-        
-        mail.send(msg)
-        print(f"Email enviado a {email}")
-        return True
+        with app.app_context():
+            msg = Message(
+                subject=asunto,
+                recipients=[email],
+                html=cuerpo
+            )
+            mail.send(msg)
+            print(f"[EMAIL] ✓ Email enviado a {email}")
     except Exception as e:
-        print(f"Error enviando email: {e}")
-        return False
+        print(f"[EMAIL] ✗ Error enviando email: {e}")
+        import traceback
+        traceback.print_exc()
 
 @app.route('/')
 def formulario():
@@ -144,8 +148,8 @@ def guardar():
         fila = [
             id_registro,
             datos['nombre'],
-            datos['email'],
-            datos['telefono'],
+            datos.get('email', ''),
+            datos.get('telefono', ''),
             clases_str,
             datos.get('tutor_nombre', ''),
             datos.get('tutor_telefono', ''),
@@ -157,17 +161,22 @@ def guardar():
         ]
         
         ws.append_row(fila)
+        print(f"[GUARDAR] Registro guardado con ID: {id_registro}")
         
         # Determinar email a enviar
         email_destino = datos.get('email') or datos.get('tutor_email')
         
-        # Enviar email de confirmación
+        # Enviar email en background (no bloquea)
         if email_destino:
-            enviar_confirmacion(email_destino, datos['nombre'], clases, datos)
+            thread = threading.Thread(target=enviar_email_async, args=(email_destino, datos['nombre'], clases, datos))
+            thread.daemon = True
+            thread.start()
         
         return jsonify({'success': True, 'mensaje': '¡Inscripción registrada correctamente!'})
     except Exception as e:
         print(f"Error guardando: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
