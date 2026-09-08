@@ -15,11 +15,9 @@ app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
 app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', True)
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
 
 mail = Mail(app)
 
-# Configura Google Sheets
 SCOPE = ['https://www.googleapis.com/auth/spreadsheets']
 SPREADSHEET_ID = '114L--j0CQW9yikCx7fn04xDPX89il5nWS7tr7z4Scko'
 
@@ -51,25 +49,14 @@ def crear_hoja_si_no_existe():
         ws = conectar_sheets()
         if ws and ws.cell(1, 1).value is None:
             encabezados = [
-                'ID',
-                'Nombre',
-                'Email',
-                'Teléfono',
-                'Clases',
-                'Tutor',
-                'Tel. Tutor',
-                'Email Tutor',
-                'Acepta Términos',
-                'Autoriza Imagen',
-                'Firma',
-                'Fecha Registro'
+                'ID', 'Nombre', 'Email', 'Teléfono', 'Clases', 'Tutor', 'Tel. Tutor', 
+                'Email Tutor', 'Acepta Términos', 'Autoriza Imagen', 'Firma', 'Fecha Registro'
             ]
             ws.insert_row(encabezados, 1)
     except Exception as e:
         print(f"Error creando hoja: {e}")
 
 def enviar_email_async(app, email, nombre, clases, datos):
-    """Envía email en background sin bloquear la aplicación"""
     with app.app_context():
         try:
             print(f"[EMAIL] Iniciando envío a: {email}")
@@ -111,11 +98,7 @@ def enviar_email_async(app, email, nombre, clases, datos):
             </html>
             """
             
-            msg = Message(
-                subject=asunto,
-                recipients=[email],
-                html=cuerpo
-            )
+            msg = Message(subject=asunto, recipients=[email], html=cuerpo)
             print(f"[EMAIL] Mensaje creado, enviando...")
             mail.send(msg)
             print(f"[EMAIL] ✓ Email enviado a {email}")
@@ -123,6 +106,10 @@ def enviar_email_async(app, email, nombre, clases, datos):
             print(f"[EMAIL] ✗ Error enviando email: {e}")
             import traceback
             traceback.print_exc()
+
+@app.route('/')
+def formulario():
+    return render_template('formulario.html')
 
 @app.route('/guardar', methods=['POST'])
 def guardar():
@@ -133,40 +120,32 @@ def guardar():
         if ws is None:
             return jsonify({'success': False, 'error': 'No se pudo conectar a Google Sheets'})
         
-        # Obtener siguiente ID
         all_rows = ws.get_all_values()
         id_registro = len(all_rows)
         
-        firma_base64 = datos.get('firma', '')
-        clases = datos.get('clases', [])
-        clases_str = ', '.join(clases)
-        
-        # Crear fila con los datos
         fila = [
             id_registro,
             datos['nombre'],
             datos.get('email', ''),
             datos.get('telefono', ''),
-            clases_str,
+            ', '.join(datos.get('clases', [])),
             datos.get('tutor_nombre', ''),
             datos.get('tutor_telefono', ''),
             datos.get('tutor_email', ''),
             'Sí' if datos.get('acepta_terminos') else 'No',
             'Sí' if datos.get('autoriza_imagen') else 'No',
-            firma_base64,
+            datos.get('firma', ''),
             datetime.now().strftime('%d/%m/%Y %H:%M')
         ]
         
         ws.append_row(fila)
         print(f"[GUARDAR] Registro guardado con ID: {id_registro}")
         
-        # Determinar email a enviar
         email_destino = datos.get('email') or datos.get('tutor_email')
         
-        # Enviar email en background (no bloquea)
         if email_destino:
             print(f"[GUARDAR] Iniciando thread de email...")
-            thread = threading.Thread(target=enviar_email_async, args=(app, email_destino, datos['nombre'], clases, datos))
+            thread = threading.Thread(target=enviar_email_async, args=(app, email_destino, datos['nombre'], datos.get('clases', []), datos))
             thread.start()
         
         return jsonify({'success': True, 'mensaje': '¡Inscripción registrada correctamente!'})
