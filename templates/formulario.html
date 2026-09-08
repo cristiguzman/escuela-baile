@@ -48,20 +48,20 @@
                 </select>
             </div>
 
-            <div id="datos-alumno">
+                        <div id="datos-alumno">
                 <div class="form-group">
-                    <label for="nombre">Nombre Completo *</label>
-                    <input type="text" id="nombre" name="nombre" required>
+                    <label for="nombre_mayor">Nombre Completo *</label>
+                    <input type="text" id="nombre_mayor" name="nombre" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email *</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="email_mayor">Email *</label>
+                    <input type="email" id="email_mayor" name="email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="telefono">Teléfono *</label>
-                    <input type="tel" id="telefono" name="telefono" required>
+                    <label for="telefono_mayor">Teléfono *</label>
+                    <input type="tel" id="telefono_mayor" name="telefono" required>
                 </div>
             </div>
 
@@ -70,8 +70,8 @@
                 <div class="section-title">Datos del Tutor/Responsable</div>
                 
                 <div class="form-group">
-                    <label for="nombre">Nombre Completo del Alumno *</label>
-                    <input type="text" id="nombre" name="nombre" required>
+                    <label for="nombre_menor">Nombre Completo del Alumno *</label>
+                    <input type="text" id="nombre_menor" name="nombre" required>
                 </div>
 
                 <div class="form-group">
@@ -222,9 +222,10 @@
                 datosAlumno.classList.remove('hidden');
                 datosTutor.classList.add('hidden');
                 // Hacer requeridos los campos del alumno
-                document.getElementById('nombre').required = true;
-                document.getElementById('email').required = true;
-                document.getElementById('telefono').required = true;
+                document.getElementById('nombre_mayor').required = true;
+                document.getElementById('email_mayor').required = true;
+                document.getElementById('telefono_mayor').required = true;
+                document.getElementById('nombre_menor').required = false;
                 document.getElementById('tutor_nombre').required = false;
                 document.getElementById('tutor_email').required = false;
                 document.getElementById('tutor_telefono').required = false;
@@ -232,9 +233,10 @@
                 datosAlumno.classList.add('hidden');
                 datosTutor.classList.remove('hidden');
                 // Hacer requeridos los campos del tutor
-                document.getElementById('nombre').required = true;
-                document.getElementById('email').required = false;
-                document.getElementById('telefono').required = false;
+                document.getElementById('nombre_mayor').required = false;
+                document.getElementById('email_mayor').required = false;
+                document.getElementById('telefono_mayor').required = false;
+                document.getElementById('nombre_menor').required = true;
                 document.getElementById('tutor_nombre').required = true;
                 document.getElementById('tutor_email').required = true;
                 document.getElementById('tutor_telefono').required = true;
@@ -253,11 +255,23 @@
                 return;
             }
 
+            let nombre, email, telefono;
+            
+            if (edad === 'mayor') {
+                nombre = document.getElementById('nombre_mayor').value;
+                email = document.getElementById('email_mayor').value;
+                telefono = document.getElementById('telefono_mayor').value;
+            } else {
+                nombre = document.getElementById('nombre_menor').value;
+                email = '';
+                telefono = '';
+            }
+
             const datos = {
                 edad: edad,
-                nombre: document.getElementById('nombre').value,
-                email: document.getElementById('email').value || '',
-                telefono: document.getElementById('telefono').value || '',
+                nombre: nombre,
+                email: email,
+                telefono: telefono,
                 tutor_nombre: document.getElementById('tutor_nombre').value || '',
                 tutor_email: document.getElementById('tutor_email').value || '',
                 tutor_telefono: document.getElementById('tutor_telefono').value || '',
