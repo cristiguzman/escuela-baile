@@ -17,16 +17,21 @@ def conectar_sheets():
         creds_json = os.getenv('GOOGLE_CREDENTIALS')
         
         if creds_json:
-            # En Render (variable de entorno)
             creds_dict = json.loads(creds_json)
             creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
         else:
-            # Localmente (archivo credentials.json)
             creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPE)
         
         client = gspread.authorize(creds)
-        sheet = client.open_by_key(SPREADSHEET_ID)
-        return sheet.worksheet("Inscripciones")
+        spreadsheet = client.open_by_key(SPREADSHEET_ID)
+        
+        # Buscar la hoja "Inscripciones", si no existe crearla
+        try:
+            ws = spreadsheet.worksheet("Inscripciones")
+        except gspread.exceptions.WorksheetNotFound:
+            ws = spreadsheet.add_worksheet(title="Inscripciones", rows=1000, cols=12)
+        
+        return ws
     except Exception as e:
         print(f"Error conectando a Google Sheets: {e}")
         return None
@@ -34,7 +39,7 @@ def conectar_sheets():
 def crear_hoja_si_no_existe():
     try:
         ws = conectar_sheets()
-        if ws.cell(1, 1).value is None:
+        if ws and ws.cell(1, 1).value is None:
             encabezados = ['ID', 'Nombre', 'Email', 'Teléfono', 'Clases', 
                           'Tutor', 'Tel. Tutor', 'Email Tutor', 
                           'Acepta Términos', 'Autoriza Imagen', 'Firma', 'Fecha Registro']
@@ -83,6 +88,7 @@ def guardar():
         
         return jsonify({'success': True, 'mensaje': '¡Inscripción registrada correctamente!'})
     except Exception as e:
+        print(f"Error guardando: {e}")
         return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
