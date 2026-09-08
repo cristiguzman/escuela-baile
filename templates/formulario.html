@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción - Escuela de Baile</title>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #667eea; min-height: 100vh; padding: 20px; }
+        .container { background: white; max-width: 700px; margin: 0 auto; padding: 30px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        h1 { color: #333; margin-bottom: 10px; text-align: center; }
+        .terminos { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 12px; max-height: 150px; overflow-y: auto; border: 1px solid #ddd; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        textarea { resize: vertical; min-height: 80px; }
+        .checkbox-group { display: flex; align-items: center; margin-bottom: 12px; }
+        .checkbox-group input { width: auto; margin-right: 10px; }
+        .checkbox-group label { margin: 0; display: inline; font-weight: normal; }
+        .clases-container { border: 1px solid #ddd; border-radius: 5px; padding: 15px; background: #fafafa; }
+        .clase-item { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .clase-item:last-child { margin-bottom: 0; }
+        .clase-item input { width: auto; }
+        .clase-item label { margin: 0; display: inline; font-weight: normal; }
+        .firma-container { border: 2px solid #ddd; border-radius: 5px; margin-top: 10px; background: #fafafa; }
+        #firma { border: none; display: block; width: 100%; height: 150px; cursor: crosshair; }
+        .botones { display: flex; gap: 10px; margin-top: 10px; }
+        .botones button { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .limpiar { background: #999; color: white; }
+        .limpiar:hover { background: #777; }
+        .enviar { background: #667eea; color: white; width: 100%; }
+        .enviar:hover { background: #764ba2; }
+        .enviar:disabled { background: #ccc; cursor: not-allowed; }
+        .alert { padding: 12px; border-radius: 5px; margin-top: 15px; display: none; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .seccion { margin: 30px 0; padding: 20px; border-left: 4px solid #667eea; background: #f9f9f9; }
+        .seccion h3 { color: #667eea; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Inscripción Escuela de Baile</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">Completa todos los datos y firma digitalmente</p>
+        
+        <form id="formulario">
+            <div class="seccion">
+                <h3>📋 Datos del Alumno</h3>
+                <div class="form-group">
+                    <label>Nombre Completo:</label>
+                    <input type="text" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono:</label>
+                    <input type="tel" name="telefono" required>
+                </div>
+            </div>
+
+            <div class="seccion">
+                <h3>📅 Selecciona tus Clases</h3>
+                <p style="color: #666; margin-bottom: 15px;">Puedes elegir una o varias clases</p>
+                <div class="clases-container">
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Lunes 15:00 - Salsa Principiante" id="clase1">
+                        <label for="clase1">Lunes 15:00 - Salsa Principiante</label>
+                    </div>
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Lunes 16:30 - Salsa Intermedio" id="clase2">
+                        <label for="clase2">Lunes 16:30 - Salsa Intermedio</label>
+                    </div>
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Martes 15:00 - Bachata Principiante" id="clase3">
+                        <label for="clase3">Martes 15:00 - Bachata Principiante</label>
+                    </div>
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Martes 16:30 - Bachata Intermedio" id="clase4">
+                        <label for="clase4">Martes 16:30 - Bachata Intermedio</label>
+                    </div>
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Miércoles 15:00 - Hip Hop" id="clase5">
+                        <label for="clase5">Miércoles 15:00 - Hip Hop</label>
+                    </div>
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Jueves 15:00 - Contemporáneo" id="clase6">
+                        <label for="clase6">Jueves 15:00 - Contemporáneo</label>
+                    </div>
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Viernes 16:00 - Ballet" id="clase7">
+                        <label for="clase7">Viernes 16:00 - Ballet</label>
+                    </div>
+                    <div class="clase-item">
+                        <input type="checkbox" name="clases" value="Sábado 10:00 - Salsa Avanzado" id="clase8">
+                        <label for="clase8">Sábado 10:00 - Salsa Avanzado</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="seccion">
+                <h3>👥 Datos del Tutor (si es menor de 18)</h3>
+                <div class="form-group">
+                    <label>Nombre del Tutor/Padre:</label>
+                    <input type="text" name="tutor_nombre">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono del Tutor:</label>
+                    <input type="tel" name="tutor_telefono">
+                </div>
+                <div class="form-group">
+                    <label>Email del Tutor:</label>
+                    <input type="email" name="tutor_email">
+                </div>
+            </div>
+
+            <div class="seccion">
+                <h3>📜 Términos y Condiciones</h3>
+                <div class="terminos">
+                    <strong>TÉRMINOS Y CONDICIONES DE LA ESCUELA DE BAILE</strong><br><br>
+                    1. ACEPTACIÓN DE TÉRMINOS: Al inscribirse, el alumno/tutor acepta todos los términos y condiciones.<br><br>
+                    2. POLÍTICA DE PRIVACIDAD: Los datos personales se recopilan conforme a RGPD/LOPD.<br><br>
+                    3. AUTORIZACIÓN DE IMAGEN: Autorizo el uso de fotografías y videos en actividades escolares y redes sociales.<br><br>
+                    4. RESPONSABILIDAD: La escuela no se responsabiliza por lesiones causadas por negligencia del alumno.<br><br>
+                    5. PAGO: Las clases deben pagarse según el plan contratado.<br><br>
+                    6. CANCELACIÓN: Se puede cancelar con 7 días de anticipación.<br><br>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" name="acepta_terminos" id="acepta_terminos" required>
+                    <label for="acepta_terminos">Acepto los términos y condiciones</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" name="autoriza_imagen" id="autoriza_imagen" required>
+                    <label for="autoriza_imagen">Autorizo el uso de imagen y video</label>
+                </div>
+            </div>
+
+            <div class="seccion">
+                <h3>✍️ Firma Digital</h3>
+                <p style="color: #666; margin-bottom: 10px;">Firma en el recuadro inferior</p>
+                <div class="firma-container">
+                    <canvas id="firma"></canvas>
+                </div>
+                <div class="botones">
+                    <button type="button" class="limpiar" onclick="limpiarFirma()">Limpiar Firma</button>
+                </div>
+            </div>
+
+            <button type="submit" class="enviar" id="botonEnviar">📥 Enviar Inscripción</button>
+            <div id="alerta" class="alert"></div>
+        </form>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('firma');
+        const signaturePad = new SignaturePad(canvas);
+
+        function limpiarFirma() {
+            signaturePad.clear();
+        }
+
+        document.getElementById('formulario').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (signaturePad.isEmpty()) {
+                mostrarAlerta('Por favor, firma digitalmente', 'error');
+                return;
+            }
+
+            // Validar que haya al menos una clase seleccionada
+            const clasesSeleccionadas = document.querySelectorAll('input[name="clases"]:checked');
+            if (clasesSeleccionadas.length === 0) {
+                mostrarAlerta('Por favor, selecciona al menos una clase', 'error');
+                return;
+            }
+
+            const boton = document.getElementById('botonEnviar');
+            boton.disabled = true;
+            boton.textContent = '⏳ Enviando...';
+
+            // Obtener firma como base64
+            const firmaBase64 = signaturePad.toDataURL('image/png');
+
+            // Obtener clases seleccionadas
+            const clases = Array.from(clasesSeleccionadas).map(el => el.value);
+
+            const datos = {
+                nombre: document.querySelector('[name="nombre"]').value,
+                email: document.querySelector('[name="email"]').value,
+                telefono: document.querySelector('[name="telefono"]').value,
+                clases: clases,
+                tutor_nombre: document.querySelector('[name="tutor_nombre"]').value,
+                tutor_telefono: document.querySelector('[name="tutor_telefono"]').value,
+                tutor_email: document.querySelector('[name="tutor_email"]').value,
+                acepta_terminos: document.querySelector('[name="acepta_terminos"]').checked,
+                autoriza_imagen: document.querySelector('[name="autoriza_imagen"]').checked,
+                firma: firmaBase64
+            };
+
+            try {
+                const response = await fetch('/guardar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.success) {
+                    mostrarAlerta('✓ ' + resultado.mensaje, 'success');
+                    document.getElementById('formulario').reset();
+                    signaturePad.clear();
+                } else {
+                    mostrarAlerta('✗ Error: ' + resultado.error, 'error');
+                }
+            } catch (error) {
+                mostrarAlerta('✗ Error de conexión', 'error');
+                console.error('Error:', error);
+            } finally {
+                boton.disabled = false;
+                boton.textContent = '📥 Enviar Inscripción';
+            }
+        });
+
+        function mostrarAlerta(mensaje, tipo) {
+            const alerta = document.getElementById('alerta');
+            alerta.className = 'alert ' + tipo;
+            alerta.textContent = mensaje;
+            alerta.style.display = 'block';
+            setTimeout(() => alerta.style.display = 'none', 4000);
+        }
+    </script>
+</body>
+</html>
