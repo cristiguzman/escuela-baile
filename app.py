@@ -3,6 +3,7 @@ from google.oauth2.service_account import Credentials
 import gspread
 from datetime import datetime
 import os
+import json
 
 app = Flask(__name__)
 
@@ -12,7 +13,17 @@ SPREADSHEET_ID = '114L--j0CQW9yikCx7fn04xDPX89il5nWS7tr7z4Scko'  # Reemplaza con
 
 def conectar_sheets():
     try:
-        creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPE)
+        # Leer credenciales de la variable de entorno
+        creds_json = os.getenv('GOOGLE_CREDENTIALS')
+        
+        if creds_json:
+            # En Render (variable de entorno)
+            creds_dict = json.loads(creds_json)
+            creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
+        else:
+            # Localmente (archivo credentials.json)
+            creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPE)
+        
         client = gspread.authorize(creds)
         sheet = client.open_by_key(SPREADSHEET_ID)
         return sheet.worksheet("Inscripciones")
