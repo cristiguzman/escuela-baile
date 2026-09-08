@@ -70,13 +70,14 @@ def guardar():
         if ws is None:
             return jsonify({'success': False, 'error': 'No se pudo conectar a Google Sheets'})
         
-        # Obtener siguiente ID
+        # Obtener el siguiente ID (número de fila actual + 1)
+        # ws.row_count incluye el encabezado, así que el ID es ws.row_count
         id_registro = ws.row_count
         
         firma_base64 = datos.get('firma', '')
         clases = ', '.join(datos.get('clases', []))
         
-        # Crear fila con los datos en el orden correcto
+        # Crear fila con los datos
         fila = [
             id_registro,
             datos['nombre'],
