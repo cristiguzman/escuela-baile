@@ -9,13 +9,16 @@
         body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         h1 { color: #667eea; margin-bottom: 20px; text-align: center; }
+		.terminos { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 12px; max-height: 150px; overflow-y: auto; border: 1px solid #ddd; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
         input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select { 
             width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; 
         }
         input:focus, select:focus { outline: none; border-color: #667eea; }
-        .checkbox-group { margin-bottom: 15px; }
+        .checkbox-group { display: flex; align-items: center; margin-bottom: 12px; }
+        .checkbox-group input { width: auto; margin-right: 10px; }
+        .checkbox-group label { margin: 0; display: inline; font-weight: normal; }
         input[type="checkbox"] { margin-right: 8px; cursor: pointer; }
         .signature-area { border: 2px dashed #ddd; padding: 10px; border-radius: 5px; }
         canvas { border: 1px solid #ccc; width: 100%; background: white; cursor: crosshair; }
@@ -30,7 +33,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>📝 Inscripción Escuela de Baile</h1>
+        <h1>📝 Inscripción Bailando Soñarás</h1>
         
         <form id="formulario">
             <!-- DATOS DEL ALUMNO -->
@@ -104,13 +107,21 @@
 
             <!-- ACEPTACIONES -->
             <div class="section-title">Términos y Condiciones</div>
+			<div class="terminos">
+				<strong>TÉRMINOS Y CONDICIONES DE LA ESCUELA DE BAILE</strong><br><br>
+				1. ACEPTACIÓN DE TÉRMINOS: Al inscribirse, el alumno/tutor acepta todos los términos y condiciones.<br><br>
+				2. POLÍTICA DE PRIVACIDAD: Los datos personales se recopilan conforme a RGPD/LOPD.<br><br>
+				3. AUTORIZACIÓN DE IMAGEN: Autorizo el uso de fotografías y videos en redes sociales.<br><br>
+				4. RESPONSABILIDAD: La escuela no se responsabiliza por lesiones causadas por negligencia del alumno.<br><br>
+				5. PAGO: Las clases deben pagarse según el plan contratado y el plazo establecido.<br><br>
+			</div>
             <div class="checkbox-group">
                 <input type="checkbox" id="acepta" name="acepta_terminos" required>
                 <label for="acepta">Acepto los términos y condiciones *</label>
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="autoriza" name="autoriza_imagen">
-                <label for="autoriza">Autorizo el uso de imágenes en eventos</label>
+                <label for="autoriza">Autorizo el uso de imagen y video</label>
             </div>
 
             <!-- FIRMA -->
@@ -148,6 +159,32 @@
             const rect = canvas.getBoundingClientRect();
             ctx.beginPath();
             ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        });
+		
+		// Eventos táctiles para móvil
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            dibujando = true;
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!dibujando) return;
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            dibujando = false;
         });
 
         function limpiarFirma() {
