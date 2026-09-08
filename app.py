@@ -68,8 +68,8 @@ def crear_hoja_si_no_existe():
         print(f"Error creando hoja: {e}")
 
 def enviar_confirmacion(email, nombre, clases, datos):
-    try:
-        with app.app_context():
+    with app.app_context():
+        try:
             asunto = "Confirmación de Inscripción - Escuela de Baile"
             
             cuerpo = f"""
@@ -116,9 +116,9 @@ def enviar_confirmacion(email, nombre, clases, datos):
             mail.send(msg)
             print(f"Email enviado a {email}")
             return True
-    except Exception as e:
-        print(f"Error enviando email: {e}")
-        return False
+        except Exception as e:
+            print(f"Error enviando email: {e}")
+            return False
 
 @app.route('/')
 def formulario():
