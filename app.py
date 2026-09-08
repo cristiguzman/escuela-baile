@@ -70,9 +70,9 @@ def guardar():
         if ws is None:
             return jsonify({'success': False, 'error': 'No se pudo conectar a Google Sheets'})
         
-        # Obtener el siguiente ID (número de fila actual + 1)
-        # ws.row_count incluye el encabezado, así que el ID es ws.row_count
-        id_registro = ws.row_count
+        # Obtener todas las filas y calcular el siguiente ID
+        all_rows = ws.get_all_values()
+        id_registro = len(all_rows)  # Número de filas existentes = siguiente ID
         
         firma_base64 = datos.get('firma', '')
         clases = ', '.join(datos.get('clases', []))
