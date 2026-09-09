@@ -378,6 +378,10 @@ def enviar_confirmacion(email, nombre, clases, datos, actualizada=False):
 @app.route("/")
 def formulario():
     return render_template("formulario.html")
+    
+@app.route("/registro-correcto")
+def registro_correcto():
+    return render_template("registro_correcto.html")
 
 
 @app.route("/guardar", methods=["POST"])
