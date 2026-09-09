@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from html import escape
 import json
 import os
@@ -8,9 +9,6 @@ import gspread
 import requests
 from flask import Flask, jsonify, render_template, request
 from google.oauth2.service_account import Credentials
-
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 app = Flask(__name__)
 
@@ -476,7 +474,7 @@ def guardar():
         else:
             id_registro = obtener_siguiente_id(filas)
 
-        fecha_actual = fecha_actual()
+        fecha_registro = fecha_actual()
 
         fila_nueva = [
             id_registro,
@@ -490,7 +488,7 @@ def guardar():
             "Sí" if datos.get("acepta_terminos") else "No",
             "Sí" if datos.get("autoriza_imagen") else "No",
             datos.get("firma", ""),
-            fecha_actual,
+            fecha_registro,
         ]
 
         if registro_actualizado:
