@@ -9,6 +9,8 @@ import requests
 from flask import Flask, jsonify, render_template, request
 from google.oauth2.service_account import Credentials
 
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 app = Flask(__name__)
 
@@ -35,7 +37,11 @@ ENCABEZADOS = [
     "Fecha Registro",
 ]
 
+ZONA_HORARIA = ZoneInfo("Europe/Madrid")
 
+def fecha_actual():
+    return datetime.now(ZONA_HORARIA).strftime("%d/%m/%Y %H:%M")
+    
 def conectar_sheets():
     """Conecta con Google Sheets y devuelve la hoja Inscripciones."""
     try:
@@ -199,7 +205,7 @@ def enviar_confirmacion(email, nombre, clases, datos, actualizada=False):
     else:
         clases_html = "No se seleccionaron clases"
 
-    fecha_registro = datetime.now().strftime("%d/%m/%Y %H:%M")
+    fecha_registro = fecha_actual()
 
     if actualizada:
         titulo = "✓ ¡Inscripción actualizada!"
@@ -470,7 +476,7 @@ def guardar():
         else:
             id_registro = obtener_siguiente_id(filas)
 
-        fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
+        fecha_actual = fecha_actual()
 
         fila_nueva = [
             id_registro,
