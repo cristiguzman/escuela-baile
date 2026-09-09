@@ -3,44 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscripción Escuela de Baile</title>
+    <title>Inscripción | Bailando Soñarás</title>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        h1 { color: #667eea; margin-bottom: 20px; text-align: center; }
-		.terminos { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 12px; max-height: 150px; overflow-y: auto; border: 1px solid #ddd; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
-        input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select { 
-            width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        input:focus, select:focus { outline: none; border-color: #667eea; }
-        .checkbox-group { display: flex; align-items: center; margin-bottom: 12px; }
-        .checkbox-group input { width: auto; margin-right: 10px; }
-        .checkbox-group label { margin: 0; display: inline; font-weight: normal; }
-        input[type="checkbox"] { margin-right: 8px; cursor: pointer; }
-        .signature-area { border: 2px dashed #ddd; padding: 10px; border-radius: 5px; }
-        canvas { border: 1px solid #ccc; width: 100%; background: white; cursor: crosshair; }
-        button { width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #764ba2; }
-        .message { text-align: center; margin-top: 10px; padding: 10px; border-radius: 5px; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
-        .hidden { display: none !important; }
-        .section-title { font-weight: bold; color: #667eea; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #667eea; padding-bottom: 5px; }
+
+        body {
+            min-height: 100vh;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .section-title {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            color: #667eea;
+            font-weight: bold;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-group input {
+            flex-shrink: 0;
+            width: auto;
+            margin-top: 3px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            display: inline;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .terminos {
+            max-height: 150px;
+            margin: 20px 0;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 12px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .signature-area {
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+        }
+
+        .signature-area p {
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 150px;
+            background: white;
+            border: 1px solid #ccc;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            color: white;
+            font-size: 16px;
+            background: #667eea;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover:not(:disabled) {
+            background: #764ba2;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        .message {
+            margin-top: 10px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .success {
+            color: #155724;
+            background: #d4edda;
+        }
+
+        .error {
+            color: #721c24;
+            background: #f8d7da;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <div class="container">
+    <main class="container">
         <h1>📝 Inscripción Bailando Soñarás</h1>
-        
+
         <form id="formulario">
-            <!-- DATOS DEL ALUMNO -->
-            <div class="section-title">Datos del Alumno</div>
-            
+            <div class="section-title">Datos del alumno</div>
+
             <div class="form-group">
-                <label for="edad">¿Es mayor de edad? (18+)</label>
+                <label for="edad">¿Es mayor de edad? (18+) *</label>
+
                 <select id="edad" required>
                     <option value="">Selecciona...</option>
                     <option value="mayor">Sí, soy mayor de 18</option>
@@ -48,267 +197,455 @@
                 </select>
             </div>
 
-                        <div id="datos-alumno">
+            <!-- Datos para mayores de edad -->
+            <div id="datos-alumno" class="hidden">
                 <div class="form-group">
-                    <label for="nombre_mayor">Nombre Completo *</label>
-                    <input type="text" id="nombre_mayor" name="nombre" required>
+                    <label for="nombre_mayor">Nombre completo *</label>
+                    <input
+                        type="text"
+                        id="nombre_mayor"
+                        autocomplete="name"
+                    >
                 </div>
 
                 <div class="form-group">
                     <label for="email_mayor">Email *</label>
-                    <input type="email" id="email_mayor" name="email" required>
+                    <input
+                        type="email"
+                        id="email_mayor"
+                        autocomplete="email"
+                    >
                 </div>
 
                 <div class="form-group">
                     <label for="telefono_mayor">Teléfono *</label>
-                    <input type="tel" id="telefono_mayor" name="telefono" required>
+                    <input
+                        type="tel"
+                        id="telefono_mayor"
+                        autocomplete="tel"
+                    >
                 </div>
             </div>
 
-            <!-- DATOS DEL TUTOR (solo si es menor) -->
+            <!-- Datos para menores de edad -->
             <div id="datos-tutor" class="hidden">
-                <div class="section-title">Datos del Tutor/Responsable</div>
-                
                 <div class="form-group">
-                    <label for="nombre_menor">Nombre Completo del Alumno *</label>
-                    <input type="text" id="nombre_menor" name="nombre" required>
+                    <label for="nombre_menor">
+                        Nombre completo del alumno *
+                    </label>
+                    <input type="text" id="nombre_menor">
+                </div>
+
+                <div class="section-title">
+                    Datos del tutor o responsable
                 </div>
 
                 <div class="form-group">
-                    <label for="tutor_nombre">Nombre Tutor/Responsable *</label>
-                    <input type="text" id="tutor_nombre" name="tutor_nombre">
+                    <label for="tutor_nombre">
+                        Nombre del tutor o responsable *
+                    </label>
+                    <input
+                        type="text"
+                        id="tutor_nombre"
+                        autocomplete="name"
+                    >
                 </div>
 
                 <div class="form-group">
-                    <label for="tutor_email">Email Tutor *</label>
-                    <input type="email" id="tutor_email" name="tutor_email">
+                    <label for="tutor_email">Email del tutor *</label>
+                    <input
+                        type="email"
+                        id="tutor_email"
+                        autocomplete="email"
+                    >
                 </div>
 
                 <div class="form-group">
-                    <label for="tutor_telefono">Teléfono Tutor *</label>
-                    <input type="tel" id="tutor_telefono" name="tutor_telefono">
+                    <label for="tutor_telefono">
+                        Teléfono del tutor *
+                    </label>
+                    <input
+                        type="tel"
+                        id="tutor_telefono"
+                        autocomplete="tel"
+                    >
                 </div>
             </div>
 
-            <!-- CLASES -->
-            <div class="section-title">Selecciona tus Clases</div>
+            <div class="section-title">Selecciona tus clases</div>
+
             <div class="checkbox-group">
-                <input type="checkbox" id="clase1" name="clases" value="Lunes 15:00 - Salsa Principiante">
-                <label for="clase1">Lunes 15:00 - Salsa Principiante</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="clase2" name="clases" value="Martes 16:30 - Bachata Intermedio">
-                <label for="clase2">Martes 16:30 - Bachata Intermedio</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="clase3" name="clases" value="Miércoles 17:00 - Reggaeton">
-                <label for="clase3">Miércoles 17:00 - Reggaeton</label>
+                <input
+                    type="checkbox"
+                    id="clase1"
+                    name="clases"
+                    value="Lunes 15:00 - Salsa Principiante"
+                >
+                <label for="clase1">
+                    Lunes 15:00 - Salsa Principiante
+                </label>
             </div>
 
-            <!-- ACEPTACIONES -->
-            <div class="section-title">Términos y Condiciones</div>
-			<div class="terminos">
-				<strong>TÉRMINOS Y CONDICIONES DE LA ESCUELA DE BAILE</strong><br><br>
-				1. ACEPTACIÓN DE TÉRMINOS: Al inscribirse, el alumno/tutor acepta todos los términos y condiciones.<br><br>
-				2. POLÍTICA DE PRIVACIDAD: Los datos personales se recopilan conforme a RGPD/LOPD.<br><br>
-				3. AUTORIZACIÓN DE IMAGEN: Autorizo el uso de fotografías y videos en redes sociales.<br><br>
-				4. RESPONSABILIDAD: La escuela no se responsabiliza por lesiones causadas por negligencia del alumno.<br><br>
-				5. PAGO: Las clases deben pagarse según el plan contratado y el plazo establecido.<br><br>
-			</div>
             <div class="checkbox-group">
-                <input type="checkbox" id="acepta" name="acepta_terminos" required>
-                <label for="acepta">Acepto los términos y condiciones *</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="autoriza" name="autoriza_imagen">
-                <label for="autoriza">Autorizo el uso de imagen y video</label>
+                <input
+                    type="checkbox"
+                    id="clase2"
+                    name="clases"
+                    value="Martes 16:30 - Bachata Intermedio"
+                >
+                <label for="clase2">
+                    Martes 16:30 - Bachata Intermedio
+                </label>
             </div>
 
-            <!-- FIRMA -->
-            <div class="section-title">Firma Digital</div>
+            <div class="checkbox-group">
+                <input
+                    type="checkbox"
+                    id="clase3"
+                    name="clases"
+                    value="Miércoles 17:00 - Reggaeton"
+                >
+                <label for="clase3">
+                    Miércoles 17:00 - Reggaeton
+                </label>
+            </div>
+
+            <div class="section-title">Términos y condiciones</div>
+
+            <div class="terminos">
+                <strong>
+                    TÉRMINOS Y CONDICIONES DE LA ESCUELA DE BAILE
+                </strong>
+
+                <br><br>
+
+                1. ACEPTACIÓN DE TÉRMINOS: Al inscribirse, el
+                alumno o tutor acepta todos los términos y condiciones.
+
+                <br><br>
+
+                2. POLÍTICA DE PRIVACIDAD: Los datos personales se
+                recopilan conforme al RGPD y la LOPDGDD.
+
+                <br><br>
+
+                3. AUTORIZACIÓN DE IMAGEN: La autorización para usar
+                fotografías y vídeos es opcional.
+
+                <br><br>
+
+                4. RESPONSABILIDAD: La escuela no se responsabiliza
+                de lesiones causadas por negligencia del alumno.
+
+                <br><br>
+
+                5. PAGO: Las clases deberán pagarse según el plan
+                contratado y dentro del plazo establecido.
+            </div>
+
+            <div class="checkbox-group">
+                <input
+                    type="checkbox"
+                    id="acepta"
+                    required
+                >
+                <label for="acepta">
+                    Acepto los términos y condiciones *
+                </label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="autoriza">
+                <label for="autoriza">
+                    Autorizo el uso de imagen y vídeo
+                </label>
+            </div>
+
+            <div class="section-title">Firma digital</div>
+
             <div class="signature-area">
                 <p>Firma aquí:</p>
-                <canvas id="canvas" width="500" height="150" style="max-width: 100%; display: block;"></canvas>
-                <button type="button" onclick="limpiarFirma()">Limpiar Firma</button>
+
+                <canvas
+                    id="canvas"
+                    width="500"
+                    height="150"
+                    aria-label="Área para realizar la firma"
+                ></canvas>
+
+                <button type="button" id="boton-limpiar">
+                    Limpiar firma
+                </button>
             </div>
 
-            <!-- ENVIAR -->
-            <button type="submit">✓ Enviar Inscripción</button>
-            <div id="mensaje" class="message" style="display:none;"></div>
+            <button type="submit" id="boton-enviar">
+                ✓ Enviar inscripción
+            </button>
+
+            <div
+                id="mensaje"
+                class="message"
+                role="alert"
+                style="display: none;"
+            ></div>
         </form>
-    </div>
+    </main>
 
     <script>
-        // Canvas para firma
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        const formulario = document.getElementById("formulario");
+        const edadSelect = document.getElementById("edad");
+        const datosAlumno = document.getElementById("datos-alumno");
+        const datosTutor = document.getElementById("datos-tutor");
+        const botonEnviar = document.getElementById("boton-enviar");
+
+        const nombreMayor = document.getElementById("nombre_mayor");
+        const emailMayor = document.getElementById("email_mayor");
+        const telefonoMayor = document.getElementById("telefono_mayor");
+        const nombreMenor = document.getElementById("nombre_menor");
+        const tutorNombre = document.getElementById("tutor_nombre");
+        const tutorEmail = document.getElementById("tutor_email");
+        const tutorTelefono = document.getElementById("tutor_telefono");
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
         let dibujando = false;
+        let firmaRealizada = false;
 
-        // Ajustar canvas para móvil y desktop
-        function redimensionarCanvas() {
-            const rect = canvas.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            canvas.style.width = rect.width + 'px';
-            canvas.style.height = rect.height + 'px';
-            
-            ctx.scale(dpr, dpr);
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.lineWidth = 2;
-        }
+        function configurarCamposPorEdad() {
+            const edad = edadSelect.value;
+            const esMayor = edad === "mayor";
+            const esMenor = edad === "menor";
 
-        redimensionarCanvas();
-        window.addEventListener('resize', redimensionarCanvas);
+            datosAlumno.classList.toggle("hidden", !esMayor);
+            datosTutor.classList.toggle("hidden", !esMenor);
 
-        // Eventos de mouse
-        canvas.addEventListener('mousedown', (e) => {
-            dibujando = true;
-            const rect = canvas.getBoundingClientRect();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-        });
+            nombreMayor.required = esMayor;
+            emailMayor.required = esMayor;
+            telefonoMayor.required = esMayor;
 
-        canvas.addEventListener('mousemove', (e) => {
-            if (!dibujando) return;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            ctx.lineTo(x, y);
-            ctx.stroke();
-        });
+            nombreMenor.required = esMenor;
+            tutorNombre.required = esMenor;
+            tutorEmail.required = esMenor;
+            tutorTelefono.required = esMenor;
 
-        canvas.addEventListener('mouseup', () => dibujando = false);
-        canvas.addEventListener('mouseout', () => dibujando = false);
-
-        // Eventos táctiles para móvil
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            dibujando = true;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            ctx.beginPath();
-            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-        });
-
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (!dibujando) return;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            ctx.lineTo(x, y);
-            ctx.stroke();
-        });
-
-        canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            dibujando = false;
-        });
-
-        function limpiarFirma() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        // Mostrar/ocultar secciones según edad
-        document.getElementById('edad').addEventListener('change', function() {
-            const datosAlumno = document.getElementById('datos-alumno');
-            const datosTutor = document.getElementById('datos-tutor');
-            
-            if (this.value === 'mayor') {
-                datosAlumno.classList.remove('hidden');
-                datosTutor.classList.add('hidden');
-                // Hacer requeridos los campos del alumno
-                document.getElementById('nombre_mayor').required = true;
-                document.getElementById('email_mayor').required = true;
-                document.getElementById('telefono_mayor').required = true;
-                document.getElementById('nombre_menor').required = false;
-                document.getElementById('tutor_nombre').required = false;
-                document.getElementById('tutor_email').required = false;
-                document.getElementById('tutor_telefono').required = false;
-            } else if (this.value === 'menor') {
-                datosAlumno.classList.add('hidden');
-                datosTutor.classList.remove('hidden');
-                // Hacer requeridos los campos del tutor
-                document.getElementById('nombre_mayor').required = false;
-                document.getElementById('email_mayor').required = false;
-                document.getElementById('telefono_mayor').required = false;
-                document.getElementById('nombre_menor').required = true;
-                document.getElementById('tutor_nombre').required = true;
-                document.getElementById('tutor_email').required = true;
-                document.getElementById('tutor_telefono').required = true;
+            if (esMayor) {
+                nombreMenor.value = "";
+                tutorNombre.value = "";
+                tutorEmail.value = "";
+                tutorTelefono.value = "";
             }
-        });
 
-        // Enviar formulario
-        document.getElementById('formulario').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const edad = document.getElementById('edad').value;
-            const clases = Array.from(document.querySelectorAll('input[name="clases"]:checked')).map(el => el.value);
-            
-            if (clases.length === 0) {
-                mostrarMensaje('Selecciona al menos una clase', 'error');
+            if (esMenor) {
+                nombreMayor.value = "";
+                emailMayor.value = "";
+                telefonoMayor.value = "";
+            }
+        }
+
+        edadSelect.addEventListener("change", configurarCamposPorEdad);
+        configurarCamposPorEdad();
+
+        function prepararContexto() {
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#000000";
+        }
+
+        prepararContexto();
+
+        function obtenerPosicion(evento) {
+            const rect = canvas.getBoundingClientRect();
+
+            if (evento.touches && evento.touches.length > 0) {
+                return {
+                    x: evento.touches[0].clientX - rect.left,
+                    y: evento.touches[0].clientY - rect.top
+                };
+            }
+
+            return {
+                x: evento.clientX - rect.left,
+                y: evento.clientY - rect.top
+            };
+        }
+
+        function iniciarFirma(evento) {
+            evento.preventDefault();
+
+            dibujando = true;
+            firmaRealizada = true;
+
+            const posicion = obtenerPosicion(evento);
+
+            ctx.beginPath();
+            ctx.moveTo(posicion.x, posicion.y);
+        }
+
+        function dibujarFirma(evento) {
+            if (!dibujando) {
                 return;
             }
 
-            let nombre, email, telefono;
-            
-            if (edad === 'mayor') {
-                nombre = document.getElementById('nombre_mayor').value;
-                email = document.getElementById('email_mayor').value;
-                telefono = document.getElementById('telefono_mayor').value;
+            evento.preventDefault();
+
+            const posicion = obtenerPosicion(evento);
+
+            ctx.lineTo(posicion.x, posicion.y);
+            ctx.stroke();
+        }
+
+        function terminarFirma(evento) {
+            if (evento) {
+                evento.preventDefault();
+            }
+
+            dibujando = false;
+            ctx.closePath();
+        }
+
+        canvas.addEventListener("mousedown", iniciarFirma);
+        canvas.addEventListener("mousemove", dibujarFirma);
+        canvas.addEventListener("mouseup", terminarFirma);
+        canvas.addEventListener("mouseleave", terminarFirma);
+
+        canvas.addEventListener("touchstart", iniciarFirma, {
+            passive: false
+        });
+
+        canvas.addEventListener("touchmove", dibujarFirma, {
+            passive: false
+        });
+
+        canvas.addEventListener("touchend", terminarFirma, {
+            passive: false
+        });
+
+        document
+            .getElementById("boton-limpiar")
+            .addEventListener("click", () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                firmaRealizada = false;
+            });
+
+        function mostrarMensaje(texto, tipo) {
+            const mensaje = document.getElementById("mensaje");
+
+            mensaje.textContent = texto;
+            mensaje.className = `message ${tipo}`;
+            mensaje.style.display = "block";
+
+            mensaje.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        }
+
+        formulario.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            if (!formulario.reportValidity()) {
+                return;
+            }
+
+            const edad = edadSelect.value;
+
+            const clases = Array.from(
+                document.querySelectorAll(
+                    'input[name="clases"]:checked'
+                )
+            ).map((elemento) => elemento.value);
+
+            if (clases.length === 0) {
+                mostrarMensaje(
+                    "Selecciona al menos una clase.",
+                    "error"
+                );
+                return;
+            }
+
+            if (!firmaRealizada) {
+                mostrarMensaje(
+                    "Debes realizar la firma digital.",
+                    "error"
+                );
+                return;
+            }
+
+            let nombre = "";
+            let email = "";
+            let telefono = "";
+
+            if (edad === "mayor") {
+                nombre = nombreMayor.value.trim();
+                email = emailMayor.value.trim();
+                telefono = telefonoMayor.value.trim();
             } else {
-                nombre = document.getElementById('nombre_menor').value;
-                email = '';
-                telefono = '';
+                nombre = nombreMenor.value.trim();
             }
 
             const datos = {
-                edad: edad,
-                nombre: nombre,
-                email: email,
-                telefono: telefono,
-                tutor_nombre: document.getElementById('tutor_nombre').value || '',
-                tutor_email: document.getElementById('tutor_email').value || '',
-                tutor_telefono: document.getElementById('tutor_telefono').value || '',
-                clases: clases,
-                acepta_terminos: document.getElementById('acepta').checked,
-                autoriza_imagen: document.getElementById('autoriza').checked,
-                firma: canvas.toDataURL('image/png')
+                edad,
+                nombre,
+                email,
+                telefono,
+                tutor_nombre: tutorNombre.value.trim(),
+                tutor_email: tutorEmail.value.trim(),
+                tutor_telefono: tutorTelefono.value.trim(),
+                clases,
+                acepta_terminos:
+                    document.getElementById("acepta").checked,
+                autoriza_imagen:
+                    document.getElementById("autoriza").checked,
+                firma: canvas.toDataURL("image/png")
             };
 
+            botonEnviar.disabled = true;
+            botonEnviar.textContent = "Enviando...";
+
             try {
-                const response = await fetch('/guardar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
-                
-                const resultado = await response.json();
-                
-                if (resultado.success) {
-                    mostrarMensaje('✓ ' + resultado.mensaje, 'success');
-                    document.getElementById('formulario').reset();
-                    limpiarFirma();
-                } else {
-                    mostrarMensaje('✗ Error: ' + resultado.error, 'error');
+                const respuesta = await fetch(
+                    "{{ url_for('guardar') }}",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(datos)
+                    }
+                );
+
+                let resultado;
+
+                try {
+                    resultado = await respuesta.json();
+                } catch {
+                    throw new Error(
+                        "El servidor devolvió una respuesta no válida."
+                    );
                 }
+
+                if (respuesta.ok && resultado.success) {
+                    window.location.href =
+                        "{{ url_for('registro_correcto') }}";
+                    return;
+                }
+
+                throw new Error(
+                    resultado.error ||
+                    "No se pudo completar la inscripción."
+                );
             } catch (error) {
-                mostrarMensaje('✗ Error de conexión', 'error');
+                botonEnviar.disabled = false;
+                botonEnviar.textContent = "✓ Enviar inscripción";
+
+                mostrarMensaje(
+                    `✗ ${error.message || "Error de conexión."}`,
+                    "error"
+                );
             }
         });
-
-        function mostrarMensaje(texto, tipo) {
-            const mensaje = document.getElementById('mensaje');
-            mensaje.textContent = texto;
-            mensaje.className = 'message ' + tipo;
-            mensaje.style.display = 'block';
-            setTimeout(() => mensaje.style.display = 'none', 5000);
-        }
     </script>
 </body>
 </html>
