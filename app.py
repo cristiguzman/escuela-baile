@@ -493,11 +493,8 @@ def guardar():
 
         if registro_actualizado:
             worksheet.update(
-                range_name=(
-                    f"A{numero_fila_existente}:"
-                    f"L{numero_fila_existente}"
-                ),
-                values=[fila_nueva],
+                f"A{numero_fila_existente}:L{numero_fila_existente}",
+                [fila_nueva],
                 value_input_option="USER_ENTERED",
             )
 
@@ -514,8 +511,7 @@ def guardar():
             )
 
             print(
-                f"[GUARDAR] Nueva inscripción. "
-                f"ID: {id_registro}",
+                f"[GUARDAR] Nueva inscripción. ID: {id_registro}",
                 flush=True,
             )
 
