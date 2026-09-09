@@ -12,22 +12,15 @@ from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
 
-# ---------------------------------------------------------
-# CONFIGURACIÓN DE GOOGLE SHEETS
-# ---------------------------------------------------------
-
-SCOPE = [
-    "https://www.googleapis.com/auth/spreadsheets",
-]
+# Configuración de Google Sheets
+SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
 
 SPREADSHEET_ID = os.getenv(
     "SPREADSHEET_ID",
     "114L--j0CQW9yikCx7fn04xDPX89il5nWS7tr7z4Scko",
 )
 
-# Las columnas de cada clase se añadirán automáticamente
-# después de estas columnas.
-ENCABEZADOS_BASE = [
+ENCABEZADOS = [
     "ID",
     "Nombre",
     "Email",
@@ -41,15 +34,6 @@ ENCABEZADOS_BASE = [
     "Firma",
     "Fecha Registro",
 ]
-
-
-# ---------------------------------------------------------
-# FUNCIONES GENERALES
-# ---------------------------------------------------------
-
-def normalizar(valor):
-    """Normaliza texto para realizar comparaciones."""
-    return str(valor or "").strip().casefold()
 
 
 def conectar_sheets():
@@ -79,14 +63,13 @@ def conectar_sheets():
             worksheet = spreadsheet.add_worksheet(
                 title="Inscripciones",
                 rows=1000,
-                cols=len(ENCABEZADOS_BASE),
+                cols=len(ENCABEZADOS),
             )
 
-        encabezados_actuales = worksheet.row_values(1)
-
-        if not encabezados_actuales:
+        # Añadir encabezados si la hoja está vacía.
+        if not worksheet.get_all_values():
             worksheet.append_row(
-                ENCABEZADOS_BASE,
+                ENCABEZADOS,
                 value_input_option="USER_ENTERED",
             )
 
@@ -101,210 +84,12 @@ def conectar_sheets():
         return None
 
 
-def obtener_mapa_encabezados(encabezados):
-    """
-    Devuelve un diccionario con el nombre normalizado
-    del encabezado y su posición.
-    """
-    return {
-        normalizar(encabezado): posicion
-        for posicion, encabezado in enumerate(encabezados)
-    }
+def normalizar(valor):
+    """Normaliza un texto para poder compararlo."""
+    return str(valor or "").strip().casefold()
 
 
-def obtener_valor_fila(fila, mapa_encabezados, encabezado):
-    """Obtiene el valor de una fila utilizando el nombre de la columna."""
-    posicion = mapa_encabezados.get(normalizar(encabezado))
-
-    if posicion is None or posicion >= len(fila):
-        return ""
-
-    return fila[posicion]
-
-
-# ---------------------------------------------------------
-# COLUMNAS DINÁMICAS PARA LAS CLASES
-# ---------------------------------------------------------
-
-def asegurar_columnas_clases(worksheet, clases):
-    """
-    Crea automáticamente una columna por cada clase nueva.
-
-    Las columnas se añaden al final de Google Sheets.
-    Las filas anteriores se inicializan con No.
-    """
-    encabezados = worksheet.row_values(1)
-
-    if not encabezados:
-        encabezados = ENCABEZADOS_BASE.copy()
-
-        worksheet.append_row(
-            encabezados,
-            value_input_option="USER_ENTERED",
-        )
-
-    encabezados_normalizados = {
-        normalizar(encabezado)
-        for encabezado in encabezados
-    }
-
-    clases_nuevas = []
-
-    for clase in clases:
-        nombre_clase = str(clase or "").strip()
-
-        if not nombre_clase:
-            continue
-
-        if normalizar(nombre_clase) not in encabezados_normalizados:
-            clases_nuevas.append(nombre_clase)
-            encabezados.append(nombre_clase)
-            encabezados_normalizados.add(normalizar(nombre_clase))
-
-    if not clases_nuevas:
-        return encabezados
-
-    columnas_anteriores = len(encabezados) - len(clases_nuevas)
-    columnas_necesarias = len(encabezados)
-
-    if worksheet.col_count < columnas_necesarias:
-        worksheet.add_cols(
-            columnas_necesarias - worksheet.col_count
-        )
-
-    ultima_celda_encabezado = gspread.utils.rowcol_to_a1(
-        1,
-        columnas_necesarias,
-    )
-
-    worksheet.update(
-        range_name=f"A1:{ultima_celda_encabezado}",
-        values=[encabezados],
-        value_input_option="USER_ENTERED",
-    )
-
-    # Inicializar con "No" las nuevas columnas para registros anteriores.
-    numero_filas = len(worksheet.get_all_values())
-
-    if numero_filas > 1:
-        primera_columna_nueva = columnas_anteriores + 1
-        ultima_columna_nueva = columnas_necesarias
-
-        celda_inicial = gspread.utils.rowcol_to_a1(
-            2,
-            primera_columna_nueva,
-        )
-
-        celda_final = gspread.utils.rowcol_to_a1(
-            numero_filas,
-            ultima_columna_nueva,
-        )
-
-        valores_no = [
-            ["No"] * len(clases_nuevas)
-            for _ in range(numero_filas - 1)
-        ]
-
-        worksheet.update(
-            range_name=f"{celda_inicial}:{celda_final}",
-            values=valores_no,
-            value_input_option="USER_ENTERED",
-        )
-
-    print(
-        "[SHEETS] Nuevas columnas de clases creadas: "
-        f"{', '.join(clases_nuevas)}",
-        flush=True,
-    )
-
-    return encabezados
-
-
-def construir_fila(
-    encabezados,
-    id_registro,
-    nombre,
-    email,
-    telefono,
-    clases,
-    tutor_nombre,
-    tutor_telefono,
-    tutor_email,
-    datos,
-):
-    """
-    Construye una fila respetando el orden actual de las columnas.
-
-    En la columna correspondiente a cada clase guarda Sí o No.
-    """
-    fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
-
-    clases_normalizadas = {
-        normalizar(clase)
-        for clase in clases
-        if str(clase or "").strip()
-    }
-
-    valores_base = {
-        "id": id_registro,
-        "nombre": nombre,
-        "email": email,
-        "teléfono": telefono,
-        "telefono": telefono,
-        "clases": ", ".join(
-            str(clase).strip()
-            for clase in clases
-            if str(clase or "").strip()
-        ),
-        "tutor": tutor_nombre,
-        "tel. tutor": tutor_telefono,
-        "email tutor": tutor_email,
-        "acepta términos": (
-            "Sí" if datos.get("acepta_terminos") else "No"
-        ),
-        "acepta terminos": (
-            "Sí" if datos.get("acepta_terminos") else "No"
-        ),
-        "autoriza imagen": (
-            "Sí" if datos.get("autoriza_imagen") else "No"
-        ),
-        "firma": datos.get("firma", ""),
-        "fecha registro": fecha_actual,
-    }
-
-    encabezados_base_normalizados = {
-        normalizar(encabezado)
-        for encabezado in ENCABEZADOS_BASE
-    }
-
-    fila = []
-
-    for encabezado in encabezados:
-        encabezado_normalizado = normalizar(encabezado)
-
-        if encabezado_normalizado in valores_base:
-            fila.append(
-                valores_base[encabezado_normalizado]
-            )
-
-        elif encabezado_normalizado in encabezados_base_normalizados:
-            fila.append("")
-
-        elif encabezado_normalizado in clases_normalizadas:
-            fila.append("Sí")
-
-        else:
-            # Es una clase que no ha sido seleccionada.
-            fila.append("No")
-
-    return fila
-
-
-# ---------------------------------------------------------
-# ACTUALIZACIÓN DE INSCRIPCIONES
-# ---------------------------------------------------------
-
-def buscar_fila_existente(filas, encabezados, datos):
+def buscar_fila_existente(filas, datos):
     """
     Busca una inscripción existente.
 
@@ -312,69 +97,47 @@ def buscar_fila_existente(filas, encabezados, datos):
         Se identifica por el email del alumno.
 
     Menor:
-        Se identifica por el nombre del alumno y email del tutor.
+        Se identifica por nombre del alumno y email del tutor.
 
-    Devuelve el número real de fila en Google Sheets.
+    Devuelve el número real de fila en Google Sheets o None.
     """
-    if len(filas) <= 1:
-        return None
-
-    mapa_encabezados = obtener_mapa_encabezados(encabezados)
-
     edad = normalizar(datos.get("edad"))
     nombre = normalizar(datos.get("nombre"))
     email = normalizar(datos.get("email"))
     tutor_email = normalizar(datos.get("tutor_email"))
 
-    es_menor = edad in {
-        "menor",
-        "menor de edad",
-    }
-
+    # Se omite la primera fila porque contiene los encabezados.
     for numero_fila, fila in enumerate(filas[1:], start=2):
-        nombre_guardado = normalizar(
-            obtener_valor_fila(
-                fila,
-                mapa_encabezados,
-                "Nombre",
-            )
-        )
+        # Garantiza que existan las 12 posiciones.
+        fila_completa = fila + [""] * (12 - len(fila))
 
-        email_guardado = normalizar(
-            obtener_valor_fila(
-                fila,
-                mapa_encabezados,
-                "Email",
-            )
-        )
+        nombre_guardado = normalizar(fila_completa[1])
+        email_guardado = normalizar(fila_completa[2])
+        tutor_email_guardado = normalizar(fila_completa[7])
 
-        tutor_email_guardado = normalizar(
-            obtener_valor_fila(
-                fila,
-                mapa_encabezados,
-                "Email Tutor",
-            )
-        )
+        if edad == "mayor":
+            if email and email == email_guardado:
+                return numero_fila
 
-        if es_menor:
+        elif edad == "menor":
             if (
                 nombre
-                and tutor_email
                 and nombre == nombre_guardado
+                and tutor_email
                 and tutor_email == tutor_email_guardado
             ):
                 return numero_fila
 
         else:
+            # Compatibilidad si el formulario no envía "edad".
             if email and email == email_guardado:
                 return numero_fila
 
-            # Compatibilidad si no se recibió correctamente la edad.
             if (
                 not email
                 and nombre
-                and tutor_email
                 and nombre == nombre_guardado
+                and tutor_email
                 and tutor_email == tutor_email_guardado
             ):
                 return numero_fila
@@ -382,64 +145,21 @@ def buscar_fila_existente(filas, encabezados, datos):
     return None
 
 
-def obtener_siguiente_id(filas, encabezados):
-    """Obtiene el siguiente ID numérico disponible."""
-    if not filas:
-        return 1
-
-    mapa_encabezados = obtener_mapa_encabezados(encabezados)
+def obtener_siguiente_id(filas):
+    """Obtiene el siguiente ID disponible."""
     ids_existentes = []
 
     for fila in filas[1:]:
-        valor_id = obtener_valor_fila(
-            fila,
-            mapa_encabezados,
-            "ID",
-        )
-
         try:
-            ids_existentes.append(int(valor_id))
-        except (ValueError, TypeError):
+            ids_existentes.append(int(fila[0]))
+        except (ValueError, TypeError, IndexError):
             continue
 
     return max(ids_existentes, default=0) + 1
 
 
-def obtener_id_existente(
-    filas,
-    encabezados,
-    numero_fila,
-):
-    """Obtiene el ID de una inscripción existente."""
-    mapa_encabezados = obtener_mapa_encabezados(encabezados)
-
-    try:
-        fila = filas[numero_fila - 1]
-
-        valor_id = obtener_valor_fila(
-            fila,
-            mapa_encabezados,
-            "ID",
-        )
-
-        return int(valor_id)
-
-    except (ValueError, TypeError, IndexError):
-        return numero_fila - 1
-
-
-# ---------------------------------------------------------
-# ENVÍO DE CORREO MEDIANTE BREVO
-# ---------------------------------------------------------
-
-def enviar_confirmacion(
-    email,
-    nombre,
-    clases,
-    datos,
-    actualizada=False,
-):
-    """Envía el correo mediante la API HTTPS de Brevo."""
+def enviar_confirmacion(email, nombre, clases, datos, actualizada=False):
+    """Envía el correo de confirmación mediante la API HTTPS de Brevo."""
     api_key = os.getenv("BREVO_API_KEY")
     remitente_email = os.getenv("MAIL_SENDER_EMAIL")
     remitente_nombre = os.getenv(
@@ -449,14 +169,14 @@ def enviar_confirmacion(
 
     if not api_key:
         print(
-            "[EMAIL] Falta BREVO_API_KEY",
+            "[EMAIL] Falta la variable BREVO_API_KEY",
             flush=True,
         )
         return False
 
     if not remitente_email:
         print(
-            "[EMAIL] Falta MAIL_SENDER_EMAIL",
+            "[EMAIL] Falta la variable MAIL_SENDER_EMAIL",
             flush=True,
         )
         return False
@@ -469,7 +189,6 @@ def enviar_confirmacion(
         or datos.get("tutor_telefono")
         or "No indicado"
     )
-
     telefono_seguro = escape(str(telefono))
 
     if clases:
@@ -480,21 +199,24 @@ def enviar_confirmacion(
     else:
         clases_html = "No se seleccionaron clases"
 
-    fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
+    fecha_registro = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     if actualizada:
         titulo = "✓ ¡Inscripción actualizada!"
-        asunto = "Actualización de inscripción - Bailando Soñarás"
         texto_principal = (
-            "Hemos actualizado correctamente los datos "
-            "de tu inscripción."
+            "Hemos actualizado correctamente los datos de tu inscripción."
+        )
+        asunto = (
+            "Actualización de inscripción - Bailando Soñarás"
         )
     else:
         titulo = "✓ ¡Inscripción confirmada!"
-        asunto = "Confirmación de inscripción - Bailando Soñarás"
         texto_principal = (
             "Gracias por inscribirte en Bailando Soñarás. "
             "Hemos recibido correctamente tu solicitud."
+        )
+        asunto = (
+            "Confirmación de inscripción - Bailando Soñarás"
         )
 
     cuerpo_html = f"""
@@ -517,9 +239,7 @@ def enviar_confirmacion(
                     {titulo}
                 </h2>
 
-                <p>
-                    Hola <strong>{nombre_seguro}</strong>,
-                </p>
+                <p>Hola <strong>{nombre_seguro}</strong>,</p>
 
                 <p>{texto_principal}</p>
 
@@ -539,7 +259,7 @@ def enviar_confirmacion(
                     </p>
 
                     <p>
-                        <strong>Email:</strong>
+                        <strong>Email de contacto:</strong>
                         {email_seguro}
                     </p>
 
@@ -555,13 +275,13 @@ def enviar_confirmacion(
 
                     <p>
                         <strong>Fecha:</strong>
-                        {fecha_actual}
+                        {fecha_registro}
                     </p>
                 </div>
 
                 <p style="margin-top: 30px;">
-                    En breve nos pondremos en contacto contigo
-                    para facilitarte más información.
+                    En breve nos pondremos en contacto contigo para
+                    facilitarte más información.
                 </p>
 
                 <p style="
@@ -623,15 +343,14 @@ def enviar_confirmacion(
 
         if not response.ok:
             print(
-                f"[EMAIL] Brevo respondió "
-                f"{response.status_code}: {response.text}",
+                f"[EMAIL] Brevo respondió {response.status_code}: "
+                f"{response.text}",
                 flush=True,
             )
             return False
 
         print(
-            f"[EMAIL] Correo aceptado por Brevo: "
-            f"{response.text}",
+            f"[EMAIL] Correo aceptado por Brevo: {response.text}",
             flush=True,
         )
         return True
@@ -645,16 +364,12 @@ def enviar_confirmacion(
 
     except requests.RequestException as error:
         print(
-            f"[EMAIL] Error conectando con Brevo: {error}",
+            f"[EMAIL] Error de conexión con Brevo: {error}",
             flush=True,
         )
         traceback.print_exc()
         return False
 
-
-# ---------------------------------------------------------
-# RUTAS
-# ---------------------------------------------------------
 
 @app.route("/")
 def formulario():
@@ -688,15 +403,12 @@ def guardar():
         if not isinstance(clases, list):
             clases = []
 
-        clases = [
-            str(clase).strip()
-            for clase in clases
-            if str(clase or "").strip()
-        ]
-
-        # -------------------------------------------------
-        # VALIDACIONES
-        # -------------------------------------------------
+        # Validaciones
+        if edad not in ("mayor", "menor"):
+            return jsonify({
+                "success": False,
+                "error": "Selecciona si el alumno es mayor o menor.",
+            }), 400
 
         if not nombre:
             return jsonify({
@@ -713,112 +425,73 @@ def guardar():
         if not datos.get("acepta_terminos"):
             return jsonify({
                 "success": False,
-                "error": (
-                    "Debes aceptar los términos y condiciones."
-                ),
+                "error": "Debes aceptar los términos y condiciones.",
             }), 400
 
-        es_menor = edad in {
-            "menor",
-            "menor de edad",
-        }
-
-        if es_menor and not tutor_email:
-            return jsonify({
-                "success": False,
-                "error": "El email del tutor es obligatorio.",
-            }), 400
-
-        if not es_menor and not email:
+        if edad == "mayor" and not email:
             return jsonify({
                 "success": False,
                 "error": "El email del alumno es obligatorio.",
             }), 400
 
-        email_destino = tutor_email if es_menor else email
+        if edad == "menor" and not tutor_email:
+            return jsonify({
+                "success": False,
+                "error": "El email del tutor es obligatorio.",
+            }), 400
 
-        if not email_destino:
-            email_destino = email or tutor_email
-
-        # -------------------------------------------------
-        # CONEXIÓN CON GOOGLE SHEETS
-        # -------------------------------------------------
+        email_destino = email if edad == "mayor" else tutor_email
 
         worksheet = conectar_sheets()
 
         if worksheet is None:
             return jsonify({
                 "success": False,
-                "error": (
-                    "No se pudo conectar con Google Sheets."
-                ),
+                "error": "No se pudo conectar con Google Sheets.",
             }), 500
-
-        # Crear las columnas nuevas de clases.
-        encabezados = asegurar_columnas_clases(
-            worksheet,
-            clases,
-        )
 
         filas = worksheet.get_all_values()
 
-        # -------------------------------------------------
-        # BUSCAR SI YA EXISTE
-        # -------------------------------------------------
-
+        # Busca si la persona ya está registrada.
         numero_fila_existente = buscar_fila_existente(
             filas,
-            encabezados,
             datos,
         )
 
-        registro_actualizado = (
-            numero_fila_existente is not None
-        )
+        registro_actualizado = numero_fila_existente is not None
 
         if registro_actualizado:
-            id_registro = obtener_id_existente(
-                filas,
-                encabezados,
-                numero_fila_existente,
-            )
+            fila_anterior = filas[numero_fila_existente - 1]
+
+            try:
+                id_registro = int(fila_anterior[0])
+            except (ValueError, TypeError, IndexError):
+                id_registro = numero_fila_existente - 1
         else:
-            id_registro = obtener_siguiente_id(
-                filas,
-                encabezados,
-            )
+            id_registro = obtener_siguiente_id(filas)
 
-        # -------------------------------------------------
-        # CONSTRUIR LA FILA
-        # -------------------------------------------------
+        fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-        fila_nueva = construir_fila(
-            encabezados=encabezados,
-            id_registro=id_registro,
-            nombre=nombre,
-            email=email,
-            telefono=telefono,
-            clases=clases,
-            tutor_nombre=tutor_nombre,
-            tutor_telefono=tutor_telefono,
-            tutor_email=tutor_email,
-            datos=datos,
-        )
-
-        # -------------------------------------------------
-        # ACTUALIZAR O INSERTAR
-        # -------------------------------------------------
+        fila_nueva = [
+            id_registro,
+            nombre,
+            email,
+            telefono,
+            ", ".join(str(clase) for clase in clases),
+            tutor_nombre,
+            tutor_telefono,
+            tutor_email,
+            "Sí" if datos.get("acepta_terminos") else "No",
+            "Sí" if datos.get("autoriza_imagen") else "No",
+            datos.get("firma", ""),
+            fecha_actual,
+        ]
 
         if registro_actualizado:
-            ultima_celda = gspread.utils.rowcol_to_a1(
-                numero_fila_existente,
-                len(encabezados),
-            )
-
             worksheet.update(
                 range_name=(
                     f"A{numero_fila_existente}:"
-                    f"{ultima_celda}"
+                    f"L{numero_fila_existente}"
                 ),
                 values=[fila_nueva],
                 value_input_option="USER_ENTERED",
@@ -842,10 +515,6 @@ def guardar():
                 flush=True,
             )
 
-        # -------------------------------------------------
-        # ENVIAR CORREO
-        # -------------------------------------------------
-
         correo_enviado = enviar_confirmacion(
             email=email_destino,
             nombre=nombre,
@@ -863,8 +532,8 @@ def guardar():
                 )
             else:
                 mensaje = (
-                    "La inscripción se ha actualizado, pero no "
-                    "se pudo enviar el correo de confirmación."
+                    "La inscripción se ha actualizado, pero no se "
+                    "pudo enviar el correo de confirmación."
                 )
         else:
             if correo_enviado:
@@ -875,8 +544,8 @@ def guardar():
                 )
             else:
                 mensaje = (
-                    "La inscripción se ha registrado, pero no "
-                    "se pudo enviar el correo de confirmación."
+                    "La inscripción se ha registrado, pero no se "
+                    "pudo enviar el correo de confirmación."
                 )
 
         return jsonify({
@@ -896,15 +565,9 @@ def guardar():
 
         return jsonify({
             "success": False,
-            "error": (
-                "Ocurrió un error procesando la inscripción."
-            ),
+            "error": "Ocurrió un error procesando la inscripción.",
         }), 500
 
-
-# ---------------------------------------------------------
-# EJECUCIÓN LOCAL
-# ---------------------------------------------------------
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
