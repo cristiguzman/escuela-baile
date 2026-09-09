@@ -15,10 +15,7 @@ app = Flask(__name__)
 # Configuración de Google Sheets
 SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
 
-SPREADSHEET_ID = os.getenv(
-    "SPREADSHEET_ID",
-    "114L--j0CQW9yikCx7fn04xDPX89il5nWS7tr7z4Scko",
-)
+SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
 
 ENCABEZADOS = [
     "ID",
