@@ -164,6 +164,49 @@
             display: none !important;
         }
 
+        .dias-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .dia-tab {
+            flex: 1 0 auto;
+            width: auto;
+            margin-top: 0;
+            padding: 10px 14px;
+            color: #333;
+            background: #f1f3f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .dia-tab.activo {
+            color: white;
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .dia-contenido {
+            display: none;
+        }
+
+        .dia-contenido.activo {
+            display: block;
+        }
+
+        .sin-clases {
+            padding: 15px;
+            color: #666;
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -200,12 +243,17 @@
             <!-- Datos para mayores de edad -->
             <div id="datos-alumno" class="hidden">
                 <div class="form-group">
-                    <label for="nombre_mayor">Nombre completo *</label>
+                    <label for="nombre_mayor">Nombre y apellidos *</label>
                     <input
                         type="text"
                         id="nombre_mayor"
                         autocomplete="name"
                     >
+                </div>
+
+                <div class="form-group">
+                    <label for="dni_mayor">DNI / NIE *</label>
+                    <input type="text" id="dni_mayor" maxlength="9" autocomplete="off" placeholder="Ej.: 12345678Z">
                 </div>
 
                 <div class="form-group">
@@ -231,9 +279,14 @@
             <div id="datos-tutor" class="hidden">
                 <div class="form-group">
                     <label for="nombre_menor">
-                        Nombre completo del alumno *
+                        Nombre y apellidos del alumno *
                     </label>
                     <input type="text" id="nombre_menor">
+                </div>
+
+                <div class="form-group">
+                    <label for="dni_menor">DNI / NIE del alumno *</label>
+                    <input type="text" id="dni_menor" maxlength="9" autocomplete="off" placeholder="Ej.: 12345678Z">
                 </div>
 
                 <div class="section-title">
@@ -242,13 +295,18 @@
 
                 <div class="form-group">
                     <label for="tutor_nombre">
-                        Nombre del tutor o responsable *
+                        Nombre y apellidos del tutor o responsable *
                     </label>
                     <input
                         type="text"
                         id="tutor_nombre"
                         autocomplete="name"
                     >
+                </div>
+
+                <div class="form-group">
+                    <label for="dni_tutor">DNI / NIE del tutor *</label>
+                    <input type="text" id="dni_tutor" maxlength="9" autocomplete="off" placeholder="Ej.: 12345678Z">
                 </div>
 
                 <div class="form-group">
@@ -274,90 +332,162 @@
 
             <div class="section-title">Selecciona tus clases</div>
 
-            <div class="checkbox-group">
-                <input
-                    type="checkbox"
-                    id="clase1"
-                    name="clases"
-                    value="Lunes 15:00 - Salsa Principiante"
-                >
-                <label for="clase1">
-                    Lunes 15:00 - Salsa Principiante
-                </label>
+            <div class="dias-tabs" role="tablist" aria-label="Días de la semana">
+                <button type="button" class="dia-tab activo" data-dia="lunes" role="tab" aria-selected="true">Lunes</button>
+                <button type="button" class="dia-tab" data-dia="martes" role="tab" aria-selected="false">Martes</button>
+                <button type="button" class="dia-tab" data-dia="miercoles" role="tab" aria-selected="false">Miércoles</button>
+                <button type="button" class="dia-tab" data-dia="jueves" role="tab" aria-selected="false">Jueves</button>
+                <button type="button" class="dia-tab" data-dia="viernes" role="tab" aria-selected="false">Viernes</button>
+                <button type="button" class="dia-tab" data-dia="sabado" role="tab" aria-selected="false">Sábado</button>
+                <button type="button" class="dia-tab" data-dia="domingo" role="tab" aria-selected="false">Domingo</button>
             </div>
 
-            <div class="checkbox-group">
-                <input
-                    type="checkbox"
-                    id="clase2"
-                    name="clases"
-                    value="Martes 16:30 - Bachata Intermedio"
-                >
-                <label for="clase2">
-                    Martes 16:30 - Bachata Intermedio
-                </label>
+            <div id="dia-lunes" class="dia-contenido activo" role="tabpanel">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="clase1" name="clases" value="Lunes 18:30 - Bachata 0">
+                    <label for="clase1">Lunes 18:30 - Bachata 0</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase2" name="clases" value="Lunes 19:30 - Bachata 0/1">
+                    <label for="clase2">Lunes 19:30 - Bachata 0/1</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase3" name="clases" value="Lunes 20:30 - Bachata 1/2">
+                    <label for="clase3">Lunes 20:30 - Bachata 1/2</label>
+                </div>
             </div>
 
-            <div class="checkbox-group">
-                <input
-                    type="checkbox"
-                    id="clase3"
-                    name="clases"
-                    value="Miércoles 17:00 - Reggaeton"
-                >
-                <label for="clase3">
-                    Miércoles 17:00 - Reggaeton
-                </label>
+            <div id="dia-martes" class="dia-contenido" role="tabpanel">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="clase4" name="clases" value="Martes 18:30 - Salsa 0">
+                    <label for="clase4">Martes 18:30 - Salsa 0</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase5" name="clases" value="Martes 19:30 - Bachata 2">
+                    <label for="clase5">Martes 19:30 - Bachata 2</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase6" name="clases" value="Martes 20:30 - Salsa 2/3">
+                    <label for="clase6">Martes 20:30 - Salsa 2/3</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase7" name="clases" value="Martes 21:30 - Bachazouk">
+                    <label for="clase7">Martes 21:30 - Bachazouk</label>
+                </div>
             </div>
 
-            <div class="section-title">Términos y condiciones</div>
+            <div id="dia-miercoles" class="dia-contenido" role="tabpanel">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="clase8" name="clases" value="Miércoles 20:00 - Zouk">
+                    <label for="clase8">Miércoles 20:00 - Zouk</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase9" name="clases" value="Miércoles 21:00 - Bachata 1">
+                    <label for="clase9">Miércoles 21:00 - Bachata 1</label>
+                </div>
+            </div>
+
+            <div id="dia-jueves" class="dia-contenido" role="tabpanel">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="clase10" name="clases" value="Jueves 18:00 - Urbano adultos">
+                    <label for="clase10">Jueves 18:00 - Urbano adultos</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase11" name="clases" value="Jueves 19:00 - Kizomba 0">
+                    <label for="clase11">Jueves 19:00 - Kizomba 0</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase12" name="clases" value="Jueves 20:00 - Salsa 1">
+                    <label for="clase12">Jueves 20:00 - Salsa 1</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase13" name="clases" value="Jueves 21:00 - Salsa 1">
+                    <label for="clase13">Jueves 21:00 - Salsa 1</label>
+                </div>
+            </div>
+
+            <div id="dia-viernes" class="dia-contenido" role="tabpanel">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="clase14" name="clases" value="Viernes 19:45 - Bachata 1">
+                    <label for="clase14">Viernes 19:45 - Bachata 1</label>
+                </div>
+				<div class="checkbox-group">
+                    <input type="checkbox" id="clase15" name="clases" value="Viernes 20:45 - Bachata 0">
+                    <label for="clase15">Viernes 20:45 - Bachata 0</label>
+                </div>
+            </div>
+
+            <div id="dia-sabado" class="dia-contenido" role="tabpanel">
+                <div class="sin-clases">No hay clases disponibles este día.</div>
+            </div>
+
+            <div id="dia-domingo" class="dia-contenido" role="tabpanel">
+                <div class="sin-clases">No hay clases disponibles este día.</div>
+            </div>
+
+            <div class="section-title">Consentimiento explícito</div>
 
             <div class="terminos">
-                <strong>
-                    TÉRMINOS Y CONDICIONES DE LA ESCUELA DE BAILE
-                </strong>
 
-                <br><br>
+				María del Carmen Vergara Solera es el responsable del tratamiento de los datos personales del interesado y
+				le informa de que estos datos se tratarán de conformidad con lo dispuesto en el Reglamento (UE) 2016/679,
+				de 27 de abril (GDPR), la Ley Orgánica 3/2018, de 5 de diciembre (LOPDGDD), y la Ley (ES) 1/1982 de
+				protección civil, derecho al honor, intimidad personal y familiar y a la propia imagen, por lo que se le
+				facilita la siguiente información del tratamiento:
 
-                1. ACEPTACIÓN DE TÉRMINOS: Al inscribirse, el
-                alumno o tutor acepta todos los términos y condiciones.
+				<br><br>
 
-                <br><br>
+				<strong>Fines y legitimación del tratamiento:</strong>
+				prestación de servicios de formación y mantenimiento del historial académico (para la ejecución de un
+				contrato o precontrato del que forme parte el interesado, art. 6.1.b GDPR), envío de comunicaciones de
+				productos o servicios, grabación de imágenes y vídeos de las actividades llevadas a cabo por el responsable
+				del tratamiento para dar publicidad de las mismas en los medios de comunicación (con el consentimiento del
+				interesado, art. 6.1.a GDPR) y mantener una relación comercial (para el interés legítimo del responsable,
+				art. 6.1.f GDPR).
 
-                2. POLÍTICA DE PRIVACIDAD: Los datos personales se
-                recopilan conforme al RGPD y la LOPDGDD.
+				<br><br>
 
-                <br><br>
+				<strong>Criterios de conservación de los datos:</strong>
+				se conservarán durante no más tiempo del necesario para mantener el fin del tratamiento o mientras existan
+				prescripciones legales que dictaminen su custodia y cuando ya no sea necesario para ello, se suprimirán con
+				medidas de seguridad adecuadas para garantizar la anonimización de los datos o la destrucción total de los mismos.
 
-                3. AUTORIZACIÓN DE IMAGEN: La autorización para usar
-                fotografías y vídeos es opcional.
+				<br><br>
 
-                <br><br>
+				<strong>Comunicación de los datos:</strong>
+				no se comunicarán los datos a terceros sin su consentimiento, salvo obligación legal.
 
-                4. RESPONSABILIDAD: La escuela no se responsabiliza
-                de lesiones causadas por negligencia del alumno.
+				<br><br>
 
-                <br><br>
+				<strong>Derechos que asisten al interesado:</strong>
 
-                5. PAGO: Las clases deberán pagarse según el plan
-                contratado y dentro del plazo establecido.
-            </div>
+				<ul>
+					<li>Derecho a retirar el consentimiento en cualquier momento.</li>
+					<li>Derecho de acceso, rectificación, portabilidad y supresión de sus datos y de limitación u oposición a su tratamiento.</li>
+					<li>Derecho a presentar una reclamación ante la Autoridad de control (<a href="https://www.aepd.es" target="_blank">www.aepd.es</a>) si considera que el tratamiento no se ajusta a la normativa vigente.</li>
+				</ul>
+
+			</div>
 
             <div class="checkbox-group">
                 <input
-                    type="checkbox"
-                    id="acepta"
-                    required
-                >
+                    type="checkbox" id="acepta" required>
                 <label for="acepta">
-                    Acepto los términos y condiciones *
+                    Autorizo el envío de comunicaciones de productos o servicios *
                 </label>
             </div>
 
             <div class="checkbox-group">
-                <input type="checkbox" id="autoriza">
+                <input type="checkbox" id="autoriza" required>
                 <label for="autoriza">
-                    Autorizo el uso de imagen y vídeo
+                    Autorizo la grabación de imágenes y vídeos para uso interno *
+                </label>
+            </div>
+			
+			<div class="checkbox-group">
+                <input type="checkbox" id="autorizaweb" required>
+                <label for="autorizaweb">
+                    Autorizo la grabación de imágenes y vídeos para su publicación en medios de comunicación del Responsable: webs, redes sociales, etc. *
                 </label>
             </div>
 
@@ -399,10 +529,13 @@
         const botonEnviar = document.getElementById("boton-enviar");
 
         const nombreMayor = document.getElementById("nombre_mayor");
+        const dniMayor = document.getElementById("dni_mayor");
         const emailMayor = document.getElementById("email_mayor");
         const telefonoMayor = document.getElementById("telefono_mayor");
         const nombreMenor = document.getElementById("nombre_menor");
         const tutorNombre = document.getElementById("tutor_nombre");
+        const dniMenor = document.getElementById("dni_menor");
+        const dniTutor = document.getElementById("dni_tutor");
         const tutorEmail = document.getElementById("tutor_email");
         const tutorTelefono = document.getElementById("tutor_telefono");
 
@@ -411,6 +544,28 @@
 
         let dibujando = false;
         let firmaRealizada = false;
+
+        const pestañasDias = document.querySelectorAll(".dia-tab");
+        const contenidosDias = document.querySelectorAll(".dia-contenido");
+
+        pestañasDias.forEach((pestaña) => {
+            pestaña.addEventListener("click", () => {
+                const dia = pestaña.dataset.dia;
+
+                pestañasDias.forEach((item) => {
+                    const activo = item === pestaña;
+                    item.classList.toggle("activo", activo);
+                    item.setAttribute("aria-selected", activo ? "true" : "false");
+                });
+
+                contenidosDias.forEach((contenido) => {
+                    contenido.classList.toggle(
+                        "activo",
+                        contenido.id === `dia-${dia}`
+                    );
+                });
+            });
+        });
 
         function configurarCamposPorEdad() {
             const edad = edadSelect.value;
@@ -421,23 +576,29 @@
             datosTutor.classList.toggle("hidden", !esMenor);
 
             nombreMayor.required = esMayor;
+            dniMayor.required = esMayor;
             emailMayor.required = esMayor;
             telefonoMayor.required = esMayor;
 
             nombreMenor.required = esMenor;
+            dniMenor.required = esMenor;
             tutorNombre.required = esMenor;
+            dniTutor.required = esMenor;
             tutorEmail.required = esMenor;
             tutorTelefono.required = esMenor;
 
             if (esMayor) {
                 nombreMenor.value = "";
+                dniMenor.value = "";
                 tutorNombre.value = "";
+                dniTutor.value = "";
                 tutorEmail.value = "";
                 tutorTelefono.value = "";
             }
 
             if (esMenor) {
                 nombreMayor.value = "";
+                dniMayor.value = "";
                 emailMayor.value = "";
                 telefonoMayor.value = "";
             }
@@ -574,23 +735,28 @@
             }
 
             let nombre = "";
+            let dni = "";
             let email = "";
             let telefono = "";
 
             if (edad === "mayor") {
                 nombre = nombreMayor.value.trim();
+                dni = dniMayor.value.trim().toUpperCase();
                 email = emailMayor.value.trim();
                 telefono = telefonoMayor.value.trim();
             } else {
                 nombre = nombreMenor.value.trim();
+                dni = dniMenor.value.trim().toUpperCase();
             }
 
             const datos = {
                 edad,
                 nombre,
+                dni,
                 email,
                 telefono,
                 tutor_nombre: tutorNombre.value.trim(),
+                dni_tutor: dniTutor.value.trim().toUpperCase(),
                 tutor_email: tutorEmail.value.trim(),
                 tutor_telefono: tutorTelefono.value.trim(),
                 clases,
@@ -598,6 +764,8 @@
                     document.getElementById("acepta").checked,
                 autoriza_imagen:
                     document.getElementById("autoriza").checked,
+				autoriza_web:
+                    document.getElementById("autorizaweb").checked,
                 firma: canvas.toDataURL("image/png")
             };
 
