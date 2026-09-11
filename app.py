@@ -26,17 +26,22 @@ if not SPREADSHEET_ID:
 ENCABEZADOS = [
     "ID",
     "Nombre",
+    "DNI/NIE",
     "Email",
     "Teléfono",
     "Clases",
     "Tutor",
+    "DNI/NIE Tutor",
     "Tel. Tutor",
     "Email Tutor",
-    "Acepta Términos",
+    "Acepta Información",
+    "Autoriza Comunicaciones",
     "Autoriza Imagen",
+    "Autoriza Web",
     "Firma",
     "Fecha Registro",
 ]
+
 
 ZONA_HORARIA = ZoneInfo("Europe/Madrid")
 
@@ -644,6 +649,7 @@ def guardar():
         fila_nueva = [
             id_registro,
             nombre,
+            datos.get("dni", ""),
             email,
             telefono,
             ", ".join(
@@ -651,6 +657,7 @@ def guardar():
                 for clase in clases
             ),
             tutor_nombre,
+            datos.get("dni_tutor", ""),
             tutor_telefono,
             tutor_email,
             (
@@ -660,19 +667,31 @@ def guardar():
             ),
             (
                 "Sí"
+                if datos.get("autoriza_comunicaciones")
+                else "No"
+            ),
+            (
+                "Sí"
                 if datos.get("autoriza_imagen")
+                else "No"
+            ),
+            (
+                "Sí"
+                if datos.get("autoriza_web")
                 else "No"
             ),
             datos.get("firma", ""),
             fecha_registro,
         ]
 
+
         if registro_actualizado:
             worksheet.update(
                 [fila_nueva],
-                f"A{numero_fila_existente}:L{numero_fila_existente}",
+                f"A{numero_fila_existente}:P{numero_fila_existente}",
                 value_input_option="USER_ENTERED",
             )
+
 
             print(
                 f"[GUARDAR] Inscripción actualizada. "
