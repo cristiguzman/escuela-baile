@@ -253,7 +253,14 @@
 
                 <div class="form-group">
                     <label for="dni_mayor">DNI / NIE *</label>
-                    <input type="text" id="dni_mayor" maxlength="9" autocomplete="off" placeholder="Ej.: 12345678Z">
+                    <input
+						type="text"
+						id="dni_mayor"
+						maxlength="9"
+						pattern="[0-9XYZxyz][0-9]{7}[A-Za-z]"
+						autocomplete="off"
+						placeholder="Ej.: 12345678Z"
+					>
                 </div>
 
                 <div class="form-group">
@@ -286,7 +293,14 @@
 
                 <div class="form-group">
                     <label for="dni_menor">DNI / NIE del alumno *</label>
-                    <input type="text" id="dni_menor" maxlength="9" autocomplete="off" placeholder="Ej.: 12345678Z">
+                    <input
+						type="text"
+						id="dni_menor"
+						maxlength="9"
+						pattern="[0-9XYZxyz][0-9]{7}[A-Za-z]"
+						autocomplete="off"
+						placeholder="Ej.: 12345678Z"
+					>
                 </div>
 
                 <div class="section-title">
@@ -306,7 +320,14 @@
 
                 <div class="form-group">
                     <label for="dni_tutor">DNI / NIE del tutor *</label>
-                    <input type="text" id="dni_tutor" maxlength="9" autocomplete="off" placeholder="Ej.: 12345678Z">
+                    <input
+						type="text"
+						id="dni_tutor"
+						maxlength="9"
+						pattern="[0-9XYZxyz][0-9]{7}[A-Za-z]"
+						autocomplete="off"
+						placeholder="Ej.: 12345678Z"
+					>
                 </div>
 
                 <div class="form-group">
@@ -425,25 +446,27 @@
                 <div class="sin-clases">No hay clases disponibles este día.</div>
             </div>
 
-            <div class="section-title">Consentimiento explícito</div>
+            <div class="section-title">Información sobre protección de datos y autorizaciones</div>
 
-            <div class="terminos">
+			<div class="terminos">
 
 				María del Carmen Vergara Solera es el responsable del tratamiento de los datos personales del interesado y
 				le informa de que estos datos se tratarán de conformidad con lo dispuesto en el Reglamento (UE) 2016/679,
-				de 27 de abril (GDPR), la Ley Orgánica 3/2018, de 5 de diciembre (LOPDGDD), y la Ley (ES) 1/1982 de
-				protección civil, derecho al honor, intimidad personal y familiar y a la propia imagen, por lo que se le
-				facilita la siguiente información del tratamiento:
+				de 27 de abril (RGPD), la Ley Orgánica 3/2018, de 5 de diciembre (LOPDGDD), y la Ley Orgánica 1/1982,
+				de 5 de mayo, de protección civil del derecho al honor, a la intimidad personal y familiar y a la propia
+				imagen, por lo que se le facilita la siguiente información del tratamiento:
 
 				<br><br>
 
 				<strong>Fines y legitimación del tratamiento:</strong>
 				prestación de servicios de formación y mantenimiento del historial académico (para la ejecución de un
-				contrato o precontrato del que forme parte el interesado, art. 6.1.b GDPR), envío de comunicaciones de
-				productos o servicios, grabación de imágenes y vídeos de las actividades llevadas a cabo por el responsable
-				del tratamiento para dar publicidad de las mismas en los medios de comunicación (con el consentimiento del
-				interesado, art. 6.1.a GDPR) y mantener una relación comercial (para el interés legítimo del responsable,
-				art. 6.1.f GDPR).
+				contrato o precontrato del que forme parte el interesado, art. 6.1.b RGPD), mantenimiento de la relación
+				comercial y, cuando resulte aplicable, envío de comunicaciones relativas a productos, servicios, actividades
+				y novedades del responsable (para el interés legítimo del responsable, art. 6.1.f RGPD), así como la
+				grabación, reproducción y utilización de imágenes y vídeos de las actividades llevadas a cabo por el
+				responsable del tratamiento para su entrega o facilitación al alumno o a su representante legal y/o para
+				dar publicidad de las mismas en los medios de comunicación del responsable, cuando exista el correspondiente
+				consentimiento del interesado o de su representante legal, según corresponda (art. 6.1.a RGPD).
 
 				<br><br>
 
@@ -455,41 +478,59 @@
 				<br><br>
 
 				<strong>Comunicación de los datos:</strong>
-				no se comunicarán los datos a terceros sin su consentimiento, salvo obligación legal.
+				no se comunicarán los datos a terceros sin su consentimiento, salvo obligación legal. Las imágenes y vídeos
+				cuya publicación haya sido autorizada podrán ser accesibles públicamente a través de la página web, redes
+				sociales y otros medios de comunicación del responsable.
 
 				<br><br>
 
 				<strong>Derechos que asisten al interesado:</strong>
 
 				<ul>
-					<li>Derecho a retirar el consentimiento en cualquier momento.</li>
+					<li>Derecho a retirar el consentimiento en cualquier momento, cuando el tratamiento se base en el mismo.</li>
 					<li>Derecho de acceso, rectificación, portabilidad y supresión de sus datos y de limitación u oposición a su tratamiento.</li>
 					<li>Derecho a presentar una reclamación ante la Autoridad de control (<a href="https://www.aepd.es" target="_blank">www.aepd.es</a>) si considera que el tratamiento no se ajusta a la normativa vigente.</li>
 				</ul>
 
 			</div>
 
-            <div class="checkbox-group">
-                <input
-                    type="checkbox" id="acepta" required>
-                <label for="acepta">
-                    Autorizo el envío de comunicaciones de productos o servicios *
-                </label>
-            </div>
-
-            <div class="checkbox-group">
-                <input type="checkbox" id="autoriza" required>
-                <label for="autoriza">
-                    Autorizo la grabación de imágenes y vídeos para uso interno *
-                </label>
-            </div>
-			
 			<div class="checkbox-group">
-                <input type="checkbox" id="autorizaweb" required>
-                <label for="autorizaweb">
-                    Autorizo la grabación de imágenes y vídeos para su publicación en medios de comunicación del Responsable: webs, redes sociales, etc. *
-                </label>
-            </div>
+				<input type="checkbox" id="acepta" required>
+				<label for="acepta">
+					He leído y he sido informado/a sobre el tratamiento de los datos personales en los términos indicados
+					en esta información y en la Política de Privacidad. *
+				</label>
+			</div>
+
+			<div class="checkbox-group">
+				<input type="checkbox" id="autorizaComunicaciones">
+				<label for="autorizaComunicaciones">
+					Autorizo el envío de comunicaciones de productos o servicios.
+				</label>
+			</div>
+
+			<div class="checkbox-group">
+				<input type="checkbox" id="autorizaInterno">
+				<label for="autorizaInterno">
+					Autorizo la grabación y utilización de imágenes y vídeos de las actividades llevadas a cabo por el
+					responsable del tratamiento para su entrega o facilitación al alumno o a su representante legal.
+				</label>
+			</div>
+
+			<div class="checkbox-group">
+				<input type="checkbox" id="autorizaweb">
+				<label for="autorizaweb">
+					Autorizo la grabación, reproducción y publicación de imágenes y vídeos de las actividades llevadas a cabo
+					por el responsable del tratamiento en sus medios de comunicación, incluyendo web, redes sociales y otros
+					medios, con fines informativos, promocionales o publicitarios.
+				</label>
+			</div>
+
+			<p>
+				Las autorizaciones anteriores son independientes y voluntarias. La negativa a otorgar cualquiera de ellas
+				no impedirá la inscripción ni la prestación de los servicios de formación.
+			</p>
+
 
             <div class="section-title">Firma digital</div>
 
@@ -762,13 +803,14 @@
                 clases,
                 acepta_terminos:
                     document.getElementById("acepta").checked,
-                autoriza_imagen:
-                    document.getElementById("autoriza").checked,
+                autoriza_comunicaciones:
+					document.getElementById("autorizaComunicaciones").checked,
+				autoriza_imagen:
+					document.getElementById("autorizaInterno").checked,
 				autoriza_web:
-                    document.getElementById("autorizaweb").checked,
-                firma: canvas.toDataURL("image/png")
-            };
-
+					document.getElementById("autorizaweb").checked,
+				firma: canvas.toDataURL("image/png")
+			};
             botonEnviar.disabled = true;
             botonEnviar.textContent = "Enviando...";
 
