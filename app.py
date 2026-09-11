@@ -130,9 +130,9 @@ def buscar_fila_existente(filas, datos):
         )
 
         nombre_guardado = normalizar(fila_completa[1])
-        email_guardado = normalizar(fila_completa[2])
+        email_guardado = normalizar(fila_completa[3])
         tutor_email_guardado = normalizar(
-            fila_completa[7]
+            fila_completa[9]
         )
 
         if edad == "mayor":
